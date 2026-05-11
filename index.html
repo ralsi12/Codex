@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Codex — Learn Python</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181b22;
+      --border: #1f2330;
+      --accent: #00e5a0;
+      --accent2: #4f8cff;
+      --accent3: #ff5e7e;
+      --text: #e8eaf2;
+      --text-dim: #7a7f96;
+      --text-dimmer: #3a3f56;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+ 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+ 
+    /* ── Grid noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: rgba(10,12,16,.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+ 
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--text-dim); font-weight: 400; }
+ 
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+ 
+    .nav-cta {
+      background: var(--accent);
+      color: #000 !important;
+      padding: .45rem 1.1rem;
+      border-radius: 4px;
+      font-weight: 700 !important;
+    }
+    .nav-cta:hover { background: #00ffb0; color: #000 !important; }
+ 
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      overflow: hidden;
+    }
+ 
+    /* Glowing orbs */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,229,160,.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+ 
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--accent);
+      border: 1px solid rgba(0,229,160,.3);
+      padding: .35rem .9rem;
+      border-radius: 99px;
+      margin-bottom: 2rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+ 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(1.4); }
+    }
+ 
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 800;
+      line-height: .95;
+      letter-spacing: -.04em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+    }
+ 
+    .hero-sub {
+      max-width: 540px;
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s .2s ease both;
+    }
+ 
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp .7s .3s ease both;
+    }
+ 
+    .btn {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: .9rem;
+      padding: .75rem 1.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 24px rgba(0,229,160,.3);
+    }
+    .btn-primary:hover { box-shadow: 0 0 36px rgba(0,229,160,.5); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--text-dim); }
+ 
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      color: var(--text-dimmer);
+      font-family: var(--mono);
+      font-size: .7rem;
+      animation: fadeIn 1s 1s both;
+    }
+    .scroll-hint svg { animation: bounce 1.8s infinite; }
+ 
+    /* ── STATS STRIP ── */
+    .stats {
+      position: relative; z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat-item {
+      flex: 1;
+      max-width: 220px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: .8rem;
+      color: var(--text-dim);
+      margin-top: .3rem;
+      letter-spacing: .05em;
+    }
+ 
+    /* ── SECTION COMMON ── */
+    section { position: relative; z-index: 1; padding: 6rem 2rem; }
+    .section-tag {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--accent);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 520px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+ 
+    /* ── CURRICULUM ── */
+    .curriculum { background: var(--bg); }
+    .curriculum-header { margin-bottom: 3.5rem; }
+ 
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+ 
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s ease;
+    }
+    .module-card:hover {
+      border-color: rgba(0,229,160,.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    }
+    .module-card:hover::before { transform: scaleX(1); }
+ 
+    .module-num {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--text-dimmer);
+      margin-bottom: .75rem;
+    }
+    .module-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+    .module-desc {
+      font-size: .875rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .module-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: .65rem;
+      padding: .2rem .55rem;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .tag.accent { color: var(--accent); border-color: rgba(0,229,160,.25); background: rgba(0,229,160,.06); }
+    .tag.blue { color: var(--accent2); border-color: rgba(79,140,255,.25); background: rgba(79,140,255,.06); }
+ 
+    .module-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: .78rem;
+      color: var(--text-dimmer);
+      font-family: var(--mono);
+    }
+ 
+    /* ── CODE PREVIEW ── */
+    .preview-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .preview-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .preview-inner { grid-template-columns: 1fr; } }
+ 
+    .code-window {
+      background: #0d0f14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    }
+    .code-titlebar {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f56; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #27c93f; }
+    .code-filename {
+      margin-left: .5rem;
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--text-dimmer);
+    }
+    .code-body {
+      padding: 1.5rem;
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+      overflow-x: auto;
+    }
+    .kw { color: #ff79c6; }
+    .fn { color: #50fa7b; }
+    .st { color: #f1fa8c; }
+    .cm { color: #6272a4; }
+    .nm { color: var(--accent2); }
+    .op { color: #ff79c6; }
+    .num { color: #bd93f9; }
+ 
+    /* ── FEATURES ── */
+    .features { background: var(--bg); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    .feature-card {
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+    }
+    .feature-icon {
+      width: 44px; height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+    .feature-icon.green { background: rgba(0,229,160,.1); }
+    .feature-icon.blue  { background: rgba(79,140,255,.1); }
+    .feature-icon.pink  { background: rgba(255,94,126,.1); }
+    .feature-icon.yellow{ background: rgba(255,210,0,.1); }
+    .feature-title { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+    .feature-desc { font-size: .87rem; color: var(--text-dim); line-height: 1.65; }
+ 
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(0,229,160,.08), rgba(79,140,255,.08));
+      border-top: 1px solid rgba(0,229,160,.15);
+      border-bottom: 1px solid rgba(79,140,255,.15);
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+    .cta-banner h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: 1rem; }
+    .cta-banner p { color: var(--text-dim); margin-bottom: 2rem; }
+ 
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--text-dimmer);
+    }
+    footer span { color: var(--accent); }
+ 
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+ 
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">codex<span>.py</span></a>
+    <ul class="nav-links">
+      <li><a href="#curriculum">Curriculum</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#start" class="nav-cta">Start Free</a></li>
+    </ul>
+  </nav>
+ 
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Interactive Python Learning Platform</div>
+    <h1>Master <em>Python</em><br>Line by Line</h1>
+    <p class="hero-sub">
+      Codex is a structured, hands-on curriculum for anyone who wants to go from zero to fluent in Python — with real code, real projects, and zero fluff.
+    </p>
+    <div class="hero-actions">
+      <a href="#curriculum" class="btn btn-primary">Start Learning →</a>
+      <a href="#preview" class="btn btn-ghost">See a lesson</a>
+    </div>
+    <div class="scroll-hint">
+      scroll
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M3 9l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </section>
+ 
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Core Modules</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">80+</div>
+      <div class="stat-label">Exercises</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Real Projects</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Free Forever</div>
+    </div>
+  </div>
+ 
+  <!-- CURRICULUM -->
+  <section class="curriculum" id="curriculum">
+    <div class="container">
+      <div class="curriculum-header reveal">
+        <div class="section-tag">// Curriculum</div>
+        <h2 class="section-title">Everything you need,<br>nothing you don't.</h2>
+        <p class="section-sub">A carefully sequenced path from your first print() to deploying real applications.</p>
+      </div>
+ 
+      <div class="modules-grid">
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 01</div>
+          <div class="module-title">Python Fundamentals</div>
+          <div class="module-desc">Variables, data types, operators, and your first program. Build the mental model that everything else rests on.</div>
+          <div class="module-tags">
+            <span class="tag accent">Beginner</span>
+            <span class="tag">Variables</span>
+            <span class="tag">Types</span>
+            <span class="tag">Operators</span>
+          </div>
+          <div class="module-footer">
+            <span>8 lessons</span>
+            <span>~2 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 02</div>
+          <div class="module-title">Control Flow</div>
+          <div class="module-desc">if/elif/else, for loops, while loops, break, continue — how to make your code make decisions.</div>
+          <div class="module-tags">
+            <span class="tag accent">Beginner</span>
+            <span class="tag">Loops</span>
+            <span class="tag">Conditionals</span>
+          </div>
+          <div class="module-footer">
+            <span>7 lessons</span>
+            <span>~2 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 03</div>
+          <div class="module-title">Functions & Scope</div>
+          <div class="module-desc">Define reusable logic, understand arguments, return values, *args/**kwargs, and variable scope.</div>
+          <div class="module-tags">
+            <span class="tag accent">Beginner</span>
+            <span class="tag">Functions</span>
+            <span class="tag">Scope</span>
+          </div>
+          <div class="module-footer">
+            <span>9 lessons</span>
+            <span>~3 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 04</div>
+          <div class="module-title">Data Structures</div>
+          <div class="module-desc">Lists, tuples, dicts, sets — when to use each and how to wield them fluently.</div>
+          <div class="module-tags">
+            <span class="tag blue">Intermediate</span>
+            <span class="tag">Lists</span>
+            <span class="tag">Dicts</span>
+            <span class="tag">Sets</span>
+          </div>
+          <div class="module-footer">
+            <span>10 lessons</span>
+            <span>~3 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 05</div>
+          <div class="module-title">Object-Oriented Python</div>
+          <div class="module-desc">Classes, inheritance, dunder methods, and thinking in objects. Build your own types.</div>
+          <div class="module-tags">
+            <span class="tag blue">Intermediate</span>
+            <span class="tag">OOP</span>
+            <span class="tag">Classes</span>
+          </div>
+          <div class="module-footer">
+            <span>11 lessons</span>
+            <span>~4 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 06</div>
+          <div class="module-title">File I/O & Exceptions</div>
+          <div class="module-desc">Read and write files, handle errors gracefully with try/except, and write resilient programs.</div>
+          <div class="module-tags">
+            <span class="tag blue">Intermediate</span>
+            <span class="tag">Files</span>
+            <span class="tag">Exceptions</span>
+          </div>
+          <div class="module-footer">
+            <span>7 lessons</span>
+            <span>~2 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 07</div>
+          <div class="module-title">Modules & Packages</div>
+          <div class="module-desc">Import the standard library, install third-party packages with pip, and organize your own projects.</div>
+          <div class="module-tags">
+            <span class="tag blue">Intermediate</span>
+            <span class="tag">pip</span>
+            <span class="tag">stdlib</span>
+          </div>
+          <div class="module-footer">
+            <span>6 lessons</span>
+            <span>~2 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 08</div>
+          <div class="module-title">Working with Data</div>
+          <div class="module-desc">JSON, CSV, APIs — fetching, parsing, and transforming real-world data with Python.</div>
+          <div class="module-tags">
+            <span class="tag blue">Intermediate</span>
+            <span class="tag">JSON</span>
+            <span class="tag">APIs</span>
+            <span class="tag">CSV</span>
+          </div>
+          <div class="module-footer">
+            <span>8 lessons</span>
+            <span>~3 hrs</span>
+          </div>
+        </div>
+ 
+        <div class="module-card reveal">
+          <div class="module-num">MODULE 09 — 12</div>
+          <div class="module-title">Advanced Topics</div>
+          <div class="module-desc">Decorators, generators, async/await, type hints, testing with pytest, and performance profiling.</div>
+          <div class="module-tags">
+            <span class="tag" style="color:var(--accent3);border-color:rgba(255,94,126,.25);background:rgba(255,94,126,.06)">Advanced</span>
+            <span class="tag">Async</span>
+            <span class="tag">Testing</span>
+            <span class="tag">Generators</span>
+          </div>
+          <div class="module-footer">
+            <span>14 lessons</span>
+            <span>~6 hrs</span>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CODE PREVIEW -->
+  <section class="preview-section" id="preview">
+    <div class="container">
+      <div class="preview-inner">
+        <div class="reveal">
+          <div class="section-tag">// Sample Lesson</div>
+          <h2 class="section-title">Real code.<br>Real explanations.</h2>
+          <p class="section-sub">Every concept is taught through runnable examples. Read the explanation, modify the code, see what happens.</p>
+          <br>
+          <a href="#start" class="btn btn-primary" style="margin-top:.5rem">Open in Editor →</a>
+        </div>
+        <div class="code-window reveal">
+          <div class="code-titlebar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="code-filename">module_04/lists.py</span>
+          </div>
+          <div class="code-body">
+<span class="cm"># Module 4 · Lists in Python</span><br>
+<br>
+<span class="cm"># Create a list of items</span><br>
+<span class="nm">fruits</span> <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]<br>
+<br>
+<span class="cm"># Access elements by index (0-based)</span><br>
+<span class="fn">print</span>(fruits[<span class="num">0</span>])  <span class="cm"># → "apple"</span><br>
+<span class="fn">print</span>(fruits[<span class="op">-</span><span class="num">1</span>]) <span class="cm"># → "cherry"</span><br>
+<br>
+<span class="cm"># List methods</span><br>
+fruits.<span class="fn">append</span>(<span class="st">"mango"</span>)<br>
+fruits.<span class="fn">remove</span>(<span class="st">"banana"</span>)<br>
+<br>
+<span class="cm"># Iterate over a list</span><br>
+<span class="kw">for</span> <span class="nm">fruit</span> <span class="kw">in</span> fruits:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="st">f"I like </span><span class="nm">{fruit}</span><span class="st">"</span>)<br>
+<br>
+<span class="cm"># List comprehension (Pythonic!)</span><br>
+<span class="nm">upper</span> <span class="op">=</span> [<span class="nm">f</span>.<span class="fn">upper</span>() <span class="kw">for</span> <span class="nm">f</span> <span class="kw">in</span> fruits]<br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-tag">// Why Codex</div>
+        <h2 class="section-title">Built for how people<br>actually learn.</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon green">🧩</div>
+          <div class="feature-title">Structured Path</div>
+          <div class="feature-desc">No jumping around. Concepts build on each other deliberately, so nothing feels confusing or out of place.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon blue">⚡</div>
+          <div class="feature-title">In-Browser Editor</div>
+          <div class="feature-desc">Write and run Python right in your browser. No installs, no setup — just open a lesson and start coding.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon pink">🎯</div>
+          <div class="feature-title">Challenge Exercises</div>
+          <div class="feature-desc">Each module ends with graded exercises that push you to apply what you've learned, not just remember it.</div>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon yellow">🏗️</div>
+          <div class="feature-title">Real Projects</div>
+          <div class="feature-desc">Build a CLI app, a web scraper, a data dashboard, and more — projects you can actually show off.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CTA -->
+  <section class="cta-banner" id="start">
+    <div class="container">
+      <h2 class="reveal">Your first line of Python<br>is one click away.</h2>
+      <p class="reveal">Free, no account required to start. Create an account to save progress.</p>
+      <div class="reveal">
+        <a href="#curriculum" class="btn btn-primary" style="font-size:1rem;padding:.9rem 2.2rem;">Begin Module 01 →</a>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- FOOTER -->
+  <footer>
+    <span>codex.py</span> — a Python learning platform · built with love and <span>print()</span> statements <3
+  </footer>
+ 
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
