@@ -1,0 +1,9 @@
+notes to keep in mind:
+
+add java? maybe as a sister site bc the marketing for this is python
+add c++? same idea as above
+
+
+TODO (for the time being):
+
+add module interface and IDEs
