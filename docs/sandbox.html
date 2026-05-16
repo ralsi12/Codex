@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindflex — Python Sandbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181b22;
+      --border: #1f2330;
+      --accent: #00e5a0;
+      --accent2: #4f8cff;
+      --accent3: #ff5e7e;
+      --text: #e8eaf2;
+      --text-dim: #7a7f96;
+      --text-dimmer: #3a3f56;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      display: flex;
+      flex-direction: column;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 2rem;
+      background: rgba(10,12,16,.95);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 1rem;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--text-dim); font-weight: 400; }
+    .sandbox-badge {
+      font-family: var(--mono);
+      font-size: .62rem;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      background: rgba(79,140,255,.1);
+      color: var(--accent2);
+      border: 1px solid rgba(79,140,255,.2);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: .35rem .75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      transition: all .2s;
+    }
+    .nav-link:hover { color: var(--accent); border-color: rgba(0,229,160,.3); }
+
+    /* TOOLBAR */
+    .toolbar {
+      position: relative;
+      z-index: 10;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 1rem;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .file-tabs {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .file-tab {
+      font-family: var(--mono);
+      font-size: .7rem;
+      padding: .3rem .85rem;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      background: var(--surface2);
+      color: var(--text-dimmer);
+      cursor: pointer;
+      transition: all .15s;
+      position: relative;
+    }
+    .file-tab.active {
+      background: #0d0f14;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .file-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #0d0f14;
+    }
+    .add-tab-btn {
+      font-family: var(--mono);
+      font-size: .8rem;
+      padding: .2rem .5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-dimmer);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .add-tab-btn:hover { color: var(--accent); border-color: rgba(0,229,160,.3); }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .snippet-select {
+      font-family: var(--mono);
+      font-size: .7rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: .3rem .6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: none;
+    }
+    .snippet-select:hover { border-color: rgba(0,229,160,.3); }
+    .clear-btn {
+      font-family: var(--mono);
+      font-size: .7rem;
+      padding: .35rem .75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dimmer);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .clear-btn:hover { color: var(--text-dim); }
+    .run-btn {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .4rem 1.2rem;
+      border-radius: 5px;
+      border: none;
+      background: var(--accent);
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      box-shadow: 0 0 14px rgba(0,229,160,.2);
+      transition: all .15s;
+    }
+    .run-btn:hover { box-shadow: 0 0 24px rgba(0,229,160,.4); transform: translateY(-1px); }
+    .run-btn:active { transform: translateY(0); }
+    .shortcut-hint {
+      font-family: var(--mono);
+      font-size: .58rem;
+      color: var(--text-dimmer);
+      white-space: nowrap;
+    }
+
+    /* MAIN SPLIT */
+    .sandbox-body {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* EDITOR */
+    .editor-pane {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+    }
+    .line-numbers-row {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .line-numbers {
+      padding: 1.1rem .5rem 1.1rem .75rem;
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+      color: var(--text-dimmer);
+      text-align: right;
+      user-select: none;
+      background: #0d0f14;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      min-width: 40px;
+    }
+    .code-editor {
+      flex: 1;
+      background: #0d0f14;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+      padding: 1.1rem 1.25rem;
+      resize: none;
+      width: 100%;
+      tab-size: 4;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .code-editor::selection { background: rgba(0,229,160,.18); }
+
+    /* RIGHT SIDE — output + cheatsheet */
+    .right-pane {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Output */
+    .output-section {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+    .output-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: .55rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .output-header-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--text-dimmer);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .output-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dimmer);
+    }
+    .output-dot.running { background: #ffbd2e; animation: pulse 1s infinite; }
+    .output-dot.ok { background: var(--accent); }
+    .output-dot.err { background: var(--accent3); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .output-clear-btn {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--text-dimmer);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .output-clear-btn:hover { color: var(--text-dim); }
+
+    .output-terminal {
+      flex: 1;
+      background: #070910;
+      padding: .9rem 1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      line-height: 1.7;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .out-line { color: var(--text); display: block; }
+    .err-line { color: var(--accent3); display: block; }
+    .info-line { color: var(--text-dimmer); display: block; }
+    .ok-line { color: var(--accent); display: block; }
+    .prompt-line { color: var(--text-dimmer); display: block; margin-bottom: .25rem; }
+
+    /* Cheatsheet */
+    .cheatsheet {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      flex-shrink: 0;
+      max-height: 280px;
+    }
+    .cheat-header {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--text-dimmer);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .6rem 1rem .4rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+    }
+    .cheat-items {
+      padding: .5rem .75rem .75rem;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+    .cheat-item {
+      display: flex;
+      align-items: baseline;
+      gap: .6rem;
+      cursor: pointer;
+      border-radius: 3px;
+      padding: .2rem .3rem;
+      transition: background .15s;
+    }
+    .cheat-item:hover { background: var(--surface2); }
+    .cheat-code {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--accent2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .cheat-desc {
+      font-size: .72rem;
+      color: var(--text-dimmer);
+      line-height: 1.3;
+    }
+
+    /* Pyodide loading overlay */
+    .loading-overlay {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 50;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .6rem 1rem;
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--text-dimmer);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: opacity .3s;
+    }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner {
+      width: 10px; height: 10px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 800px) {
+      .sandbox-body { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+      .editor-pane { border-right: none; border-bottom: 1px solid var(--border); }
+      .right-pane { overflow: hidden; }
+      nav { padding: .75rem 1rem; }
+      .shortcut-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">mindflex<span>.py</span></a>
+      <span class="sandbox-badge">sandbox</span>
+    </div>
+    <div class="nav-right">
+      <a href="lesson-preview.html?module=1" class="nav-link">← Curriculum</a>
+      <a href="lesson.html?module=4&lesson=1" class="nav-link">Open a Lesson</a>
+    </div>
+  </nav>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="file-tabs" id="fileTabs"></div>
+      <button class="add-tab-btn" id="addTabBtn" title="New file">+</button>
+    </div>
+    <div class="toolbar-right">
+      <select class="snippet-select" id="snippetSelect">
+        <option value="">Load a snippet…</option>
+        <option value="lists">Module 4 · Lists</option>
+        <option value="functions">Module 3 · Functions</option>
+        <option value="loops">Module 2 · Loops</option>
+        <option value="oop">Module 5 · OOP</option>
+        <option value="fileio">Module 6 · File I/O</option>
+        <option value="hello">Hello World</option>
+        <option value="blank">Blank</option>
+      </select>
+      <button class="clear-btn" id="clearBtn">Clear</button>
+      <span class="shortcut-hint">Ctrl+Enter to run</span>
+      <button class="run-btn" id="runBtn">
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"/></svg>
+        Run
+      </button>
+    </div>
+  </div>
+
+  <div class="sandbox-body">
+    <!-- Editor -->
+    <div class="editor-pane">
+      <div class="line-numbers-row">
+        <div class="line-numbers" id="lineNumbers">1</div>
+        <textarea class="code-editor" id="codeEditor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+    </div>
+
+    <!-- Right pane: output + cheatsheet -->
+    <div class="right-pane">
+      <div class="output-section">
+        <div class="output-header">
+          <div class="output-header-label">
+            <div class="output-dot" id="outputDot"></div>
+            Output
+          </div>
+          <button class="output-clear-btn" id="outputClearBtn">clear</button>
+        </div>
+        <div class="output-terminal" id="outputTerminal">
+          <span class="info-line"># Python sandbox — write code and press Run</span>
+        </div>
+      </div>
+
+      <div class="cheatsheet">
+        <div class="cheat-header">Quick Reference</div>
+        <div class="cheat-items" id="cheatItems"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pyodide loading indicator -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    Loading Python runtime…
+  </div>
+
+  <script>
+  // ─── Snippets ─────────────────────────────────────────────────────────────
+  const SNIPPETS = {
+    lists: `# Module 4 · Lists in Python
+
+# Create a list of items
+fruits = ["apple", "banana", "cherry"]
+
+# Access elements by index (0-based)
+print(fruits[0])   # → "apple"
+print(fruits[-1])  # → "cherry"
+
+# List methods
+fruits.append("mango")
+fruits.remove("banana")
+
+# Iterate over a list
+for fruit in fruits:
+    print(f"I like {fruit}")
+
+# List comprehension (Pythonic!)
+upper = [f.upper() for f in fruits]
+print(upper)
+`,
+    functions: `# Module 3 · Functions & Scope
+
+# Defining and calling a function
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+print(greet("Alice"))
+print(greet("Bob", "Hey"))
+
+# *args and **kwargs
+def total(*nums):
+    return sum(nums)
+
+print(total(1, 2, 3, 4))  # → 10
+
+# Lambda expressions
+square = lambda x: x ** 2
+print(square(7))  # → 49
+
+# Higher-order functions
+numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+evens = list(filter(lambda n: n % 2 == 0, numbers))
+print(evens)
+`,
+    loops: `# Module 2 · Control Flow
+
+score = 78
+
+# if / elif / else
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+else:
+    print("C or below")
+
+# for loop with range
+for i in range(1, 6):
+    print(i, i ** 2)
+
+# while with break
+n = 0
+while True:
+    n += 1
+    if n == 5: break
+
+print(f"Stopped at n={n}")
+
+# List iteration
+colors = ["red", "green", "blue"]
+for i, color in enumerate(colors):
+    print(f"{i}: {color}")
+`,
+    oop: `# Module 5 · Object-Oriented Python
+
+class Animal:
+    def __init__(self, name, sound):
+        self.name = name
+        self.sound = sound
+
+    def speak(self):
+        return f"{self.name} says {self.sound}!"
+
+    def __repr__(self):
+        return f"Animal({self.name!r})"
+
+class Dog(Animal):
+    def __init__(self, name):
+        super().__init__(name, "Woof")
+
+    def fetch(self):
+        return f"{self.name} fetches the ball!"
+
+rex = Dog("Rex")
+print(rex.speak())
+print(rex.fetch())
+print(repr(rex))
+print(isinstance(rex, Animal))  # True
+`,
+    fileio: `# Module 6 · File I/O & Exceptions
+# (File operations simulated — no real files in sandbox)
+
+# Handling exceptions gracefully
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(f"Caught: {e}")
+finally:
+    print("Finally block always runs.")
+
+# Multiple exception types
+def safe_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
+print(safe_int("42"))      # → 42
+print(safe_int("hello"))   # → None
+
+# Custom exception
+class NegativeError(ValueError):
+    pass
+
+def sqrt_safe(x):
+    if x < 0:
+        raise NegativeError(f"Cannot sqrt negative: {x}")
+    return x ** 0.5
+
+try:
+    print(sqrt_safe(16))
+    print(sqrt_safe(-1))
+except NegativeError as e:
+    print(f"Error: {e}")
+`,
+    hello: `# Hello, Python!
+
+name = "World"
+print(f"Hello, {name}!")
+
+# Try some basics:
+for i in range(1, 6):
+    print(f"  {i}: {'*' * i}")
+`,
+    blank: `# Python Sandbox\n# Write your code here!\n\n`
+  };
+
+  // ─── Tab manager ──────────────────────────────────────────────────────────
+  let tabs = [{ id: 1, name: 'main.py', code: SNIPPETS.lists }];
+  let activeTabId = 1;
+  let nextTabId = 2;
+
+  function renderTabs() {
+    const container = document.getElementById('fileTabs');
+    container.innerHTML = tabs.map(t => `
+      <div class="file-tab${t.id === activeTabId ? ' active' : ''}" data-id="${t.id}">
+        ${t.name}
+        ${tabs.length > 1 ? `<span style="margin-left:.4rem;color:var(--text-dimmer);font-size:.65rem;" data-close="${t.id}">×</span>` : ''}
+      </div>
+    `).join('');
+    container.querySelectorAll('.file-tab').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target.dataset.close) {
+          closeTab(parseInt(e.target.dataset.close));
+        } else {
+          switchTab(parseInt(el.dataset.id));
+        }
+      });
+    });
+  }
+
+  function switchTab(id) {
+    // Save current
+    const cur = tabs.find(t => t.id === activeTabId);
+    if (cur) cur.code = document.getElementById('codeEditor').value;
+    activeTabId = id;
+    const tab = tabs.find(t => t.id === id);
+    if (tab) document.getElementById('codeEditor').value = tab.code;
+    renderTabs();
+    updateLineNumbers();
+  }
+
+  function addTab() {
+    const tab = { id: nextTabId++, name: `file${tabs.length + 1}.py`, code: '# New file\n' };
+    tabs.push(tab);
+    switchTab(tab.id);
+  }
+
+  function closeTab(id) {
+    if (tabs.length <= 1) return;
+    tabs = tabs.filter(t => t.id !== id);
+    if (activeTabId === id) switchTab(tabs[0].id);
+    else renderTabs();
+  }
+
+  // ─── Line numbers ─────────────────────────────────────────────────────────
+  function updateLineNumbers() {
+    const editor = document.getElementById('codeEditor');
+    const lines = editor.value.split('\n').length;
+    document.getElementById('lineNumbers').textContent = Array.from({length: lines}, (_,i) => i+1).join('\n');
+  }
+
+  document.getElementById('codeEditor').addEventListener('input', updateLineNumbers);
+  document.getElementById('codeEditor').addEventListener('scroll', function() {
+    document.getElementById('lineNumbers').scrollTop = this.scrollTop;
+  });
+
+  // ─── Tab key ──────────────────────────────────────────────────────────────
+  document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+      this.selectionStart = this.selectionEnd = start + 4;
+      updateLineNumbers();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      runCode();
+    }
+  });
+
+  // ─── Snippet loader ───────────────────────────────────────────────────────
+  document.getElementById('snippetSelect').addEventListener('change', function() {
+    const val = this.value;
+    if (!val || !SNIPPETS[val]) { this.value = ''; return; }
+    document.getElementById('codeEditor').value = SNIPPETS[val];
+    updateLineNumbers();
+    this.value = '';
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    document.getElementById('codeEditor').value = '';
+    updateLineNumbers();
+  });
+
+  document.getElementById('addTabBtn').addEventListener('click', addTab);
+  document.getElementById('outputClearBtn').addEventListener('click', () => {
+    document.getElementById('outputTerminal').innerHTML = '';
+  });
+
+  // ─── Pyodide ──────────────────────────────────────────────────────────────
+  let pyodide = null;
+  let pyodideReady = false;
+
+  async function loadPyodide() {
+    try {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+      document.head.appendChild(script);
+      await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
+      pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' });
+      pyodideReady = true;
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    } catch(e) {
+      document.getElementById('loadingOverlay').textContent = 'Python runtime unavailable — using basic mode';
+      setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 3000);
+    }
+  }
+  loadPyodide();
+
+  function setDot(state) {
+    const dot = document.getElementById('outputDot');
+    dot.className = 'output-dot' + (state ? ' ' + state : '');
+  }
+
+  function appendOutput(text, cls) {
+    const terminal = document.getElementById('outputTerminal');
+    const lines = (text || '').split('\n');
+    lines.forEach((line, i) => {
+      if (i === lines.length - 1 && line === '') return;
+      const span = document.createElement('span');
+      span.className = cls;
+      span.textContent = line;
+      terminal.appendChild(span);
+    });
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  async function runCode() {
+    // Save current tab content
+    const cur = tabs.find(t => t.id === activeTabId);
+    if (cur) cur.code = document.getElementById('codeEditor').value;
+
+    const code = document.getElementById('codeEditor').value;
+    const terminal = document.getElementById('outputTerminal');
+    terminal.innerHTML = '';
+    setDot('running');
+
+    appendOutput('$ python ' + (cur?.name || 'main.py'), 'prompt-line');
+
+    if (pyodideReady && pyodide) {
+      try {
+        let stdout = '';
+        let stderr = '';
+        pyodide.setStdout({ batched: (s) => { stdout += s + '\n'; } });
+        pyodide.setStderr({ batched: (s) => { stderr += s + '\n'; } });
+        await pyodide.runPythonAsync(code);
+        if (stdout) appendOutput(stdout, 'out-line');
+        if (stderr) appendOutput(stderr, 'err-line');
+        if (!stdout && !stderr) appendOutput('(no output)', 'info-line');
+        appendOutput('', 'ok-line');
+        appendOutput('Process finished with exit code 0', 'ok-line');
+        setDot('ok');
+      } catch(e) {
+        appendOutput(String(e), 'err-line');
+        setDot('err');
+      }
+    } else {
+      // Basic fallback
+      try {
+        const lines = [];
+        const fakePrint = (...args) => lines.push(args.map(a => {
+          if (Array.isArray(a)) return '[' + a.map(x => typeof x === 'string' ? `'${x}'` : String(x)).join(', ') + ']';
+          return String(a);
+        }).join(' '));
+        const fn = new Function('print', code.replace(/print\s*\(/g, 'print('));
+        fn(fakePrint);
+        lines.forEach(l => appendOutput(l, 'out-line'));
+        if (!lines.length) appendOutput('(no output)', 'info-line');
+        appendOutput('Process finished with exit code 0', 'ok-line');
+        setDot('ok');
+      } catch(e) {
+        appendOutput(String(e), 'err-line');
+        setDot('err');
+      }
+    }
+  }
+
+  document.getElementById('runBtn').addEventListener('click', runCode);
+
+  // ─── Cheatsheet ───────────────────────────────────────────────────────────
+  const CHEAT = [
+    { code: 'print(x)', desc: 'output x to console' },
+    { code: 'type(x)', desc: 'get type of x' },
+    { code: 'len(x)', desc: 'length of string/list' },
+    { code: 'range(n)', desc: 'numbers 0 to n-1' },
+    { code: 'int/float/str(x)', desc: 'type conversion' },
+    { code: 'input("prompt")', desc: 'read user input (str)' },
+    { code: 'f"{var}"', desc: 'f-string formatting' },
+    { code: '[x for x in y]', desc: 'list comprehension' },
+    { code: 'x if cond else y', desc: 'ternary expression' },
+    { code: '.append(x)', desc: 'add item to list' },
+    { code: '.split(sep)', desc: 'split string' },
+    { code: '.join(lst)', desc: 'join list to string' },
+    { code: 'sorted(x)', desc: 'return sorted list' },
+    { code: 'enumerate(x)', desc: 'index+value pairs' },
+    { code: 'zip(a,b)', desc: 'pair two iterables' },
+    { code: 'dict.get(k,d)', desc: 'safe dict lookup' },
+    { code: 'import module', desc: 'import a module' },
+  ];
+
+  const cheatEl = document.getElementById('cheatItems');
+  cheatEl.innerHTML = CHEAT.map(c => `
+    <div class="cheat-item" data-insert="${c.code}">
+      <span class="cheat-code">${c.code}</span>
+      <span class="cheat-desc">${c.desc}</span>
+    </div>
+  `).join('');
+
+  cheatEl.querySelectorAll('.cheat-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const editor = document.getElementById('codeEditor');
+      const pos = editor.selectionStart;
+      const insert = el.dataset.insert;
+      editor.value = editor.value.substring(0, pos) + insert + editor.value.substring(pos);
+      editor.selectionStart = editor.selectionEnd = pos + insert.length;
+      editor.focus();
+      updateLineNumbers();
+    });
+  });
+
+  // ─── Init ─────────────────────────────────────────────────────────────────
+  renderTabs();
+  document.getElementById('codeEditor').value = tabs[0].code;
+  updateLineNumbers();
+  </script>
+</body>
+</html>

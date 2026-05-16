@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindflex — Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181b22;
+      --border: #1f2330;
+      --accent: #00e5a0;
+      --accent2: #4f8cff;
+      --accent3: #ff5e7e;
+      --text: #e8eaf2;
+      --text-dim: #7a7f96;
+      --text-dimmer: #3a3f56;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: rgba(10,12,16,.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--text-dim); font-weight: 400; }
+    .nav-breadcrumb {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--text-dimmer);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .nav-breadcrumb a:hover { color: var(--accent); }
+    .nav-breadcrumb .sep { color: var(--text-dimmer); }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: var(--mono);
+      font-size: .72rem;
+      padding: .4rem .9rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .nav-btn.primary {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .nav-btn.primary:hover { box-shadow: 0 0 16px rgba(0,229,160,.4); }
+
+    /* MAIN LAYOUT — split pane */
+    .lesson-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      padding-top: 64px;
+    }
+
+    /* LEFT PANEL — lesson content */
+    .lesson-panel {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Lesson progress bar */
+    .lesson-nav-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+    .lesson-nav-info {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--text-dimmer);
+    }
+    .lesson-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .lesson-prev, .lesson-next {
+      font-family: var(--mono);
+      font-size: .7rem;
+      padding: .3rem .7rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-dim);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .lesson-prev:hover, .lesson-next:hover { border-color: var(--accent); color: var(--accent); }
+    .lesson-next.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .progress-bar {
+      height: 2px;
+      background: var(--border);
+      flex: 1;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: width .4s ease;
+    }
+
+    /* Lesson content */
+    .lesson-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2.5rem 2rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .lesson-content::-webkit-scrollbar { width: 4px; }
+    .lesson-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .lesson-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-family: var(--mono);
+      font-size: .62rem;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      margin-bottom: 1.25rem;
+    }
+    .lesson-type-badge.reading { background: rgba(79,140,255,.1); color: var(--accent2); border: 1px solid rgba(79,140,255,.2); }
+    .lesson-type-badge.exercise { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
+    .lesson-type-badge.project { background: rgba(255,94,126,.1); color: var(--accent3); border: 1px solid rgba(255,94,126,.2); }
+
+    .lesson-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .lesson-subtitle {
+      font-size: .9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .lesson-body h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 2rem 0 .75rem;
+      color: var(--text);
+    }
+    .lesson-body h3:first-child { margin-top: 0; }
+    .lesson-body p {
+      font-size: .9rem;
+      color: var(--text-dim);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .lesson-body ul, .lesson-body ol {
+      margin: .5rem 0 1rem 1.5rem;
+    }
+    .lesson-body li {
+      font-size: .88rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: .35rem;
+    }
+    .lesson-body code {
+      font-family: var(--mono);
+      font-size: .8rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: .1rem .4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-body .tip-box {
+      background: rgba(0,229,160,.05);
+      border: 1px solid rgba(0,229,160,.2);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .lesson-body .tip-box p {
+      margin: 0;
+      font-size: .85rem;
+    }
+    .lesson-body .tip-box strong {
+      color: var(--accent);
+      font-size: .75rem;
+      font-family: var(--mono);
+      display: block;
+      margin-bottom: .4rem;
+    }
+    .lesson-body .warn-box {
+      background: rgba(255,94,126,.05);
+      border: 1px solid rgba(255,94,126,.2);
+      border-left: 3px solid var(--accent3);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .lesson-body .warn-box p { margin: 0; font-size: .85rem; }
+    .lesson-body .warn-box strong { color: var(--accent3); font-size: .75rem; font-family: var(--mono); display: block; margin-bottom: .4rem; }
+
+    /* Inline code block in lesson */
+    .lesson-body .code-snippet {
+      background: #0d0f14;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1.25rem 0;
+    }
+    .lesson-body .code-snippet .titlebar {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .6rem 1rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .lesson-body .code-snippet .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .lesson-body .code-snippet .dot-r { background: #ff5f56; }
+    .lesson-body .code-snippet .dot-y { background: #ffbd2e; }
+    .lesson-body .code-snippet .dot-g { background: #27c93f; }
+    .lesson-body .code-snippet .fname {
+      font-family: var(--mono);
+      font-size: .66rem;
+      color: var(--text-dimmer);
+      margin-left: .3rem;
+    }
+    .lesson-body .code-snippet pre {
+      padding: 1.1rem 1.25rem;
+      font-family: var(--mono);
+      font-size: .8rem;
+      line-height: 1.85;
+      overflow-x: auto;
+      margin: 0;
+    }
+    .lesson-body .code-snippet .kw { color: #ff79c6; }
+    .lesson-body .code-snippet .fn { color: #50fa7b; }
+    .lesson-body .code-snippet .st { color: #f1fa8c; }
+    .lesson-body .code-snippet .cm { color: #6272a4; }
+    .lesson-body .code-snippet .nm { color: var(--accent2); }
+    .lesson-body .code-snippet .op { color: #ff79c6; }
+    .lesson-body .code-snippet .num { color: #bd93f9; }
+
+    .try-it-prompt {
+      background: var(--surface);
+      border: 1px solid rgba(0,229,160,.2);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .try-it-prompt .icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .try-it-prompt .label {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      margin-bottom: .2rem;
+    }
+    .try-it-prompt .desc {
+      font-size: .82rem;
+      color: var(--text-dim);
+    }
+
+    /* RIGHT PANEL — IDE */
+    .ide-panel {
+      display: flex;
+      flex-direction: column;
+      background: #0d0f14;
+      overflow: hidden;
+    }
+
+    .ide-topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .ide-title {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .ide-dots { display: flex; gap: .4rem; }
+    .ide-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .ide-dot-r { background: #ff5f56; }
+    .ide-dot-y { background: #ffbd2e; }
+    .ide-dot-g { background: #27c93f; }
+    .ide-file { color: var(--text-dimmer); }
+
+    .ide-actions {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .ide-reset-btn {
+      font-family: var(--mono);
+      font-size: .68rem;
+      padding: .3rem .65rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dimmer);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .ide-reset-btn:hover { color: var(--text-dim); border-color: var(--border); }
+    .run-btn {
+      font-family: var(--mono);
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .35rem .9rem;
+      border-radius: 5px;
+      border: none;
+      background: var(--accent);
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      transition: all .15s;
+      box-shadow: 0 0 12px rgba(0,229,160,.2);
+    }
+    .run-btn:hover { box-shadow: 0 0 20px rgba(0,229,160,.4); transform: translateY(-1px); }
+    .run-btn:active { transform: translateY(0); }
+    .run-btn svg { flex-shrink: 0; }
+
+    /* Editor area */
+    .editor-wrapper {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .editor-area {
+      flex: 1;
+      background: #0d0f14;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+      padding: 1.25rem 1.5rem;
+      resize: none;
+      width: 100%;
+      tab-size: 4;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .editor-area::selection { background: rgba(0,229,160,.2); }
+
+    /* Output terminal */
+    .output-divider {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: .5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .output-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--text-dimmer);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .output-status {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--text-dimmer);
+    }
+    .output-status.ok { color: var(--accent); }
+    .output-status.err { color: var(--accent3); }
+
+    .output-terminal {
+      height: 200px;
+      background: #070910;
+      padding: 1rem 1.25rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      line-height: 1.7;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      flex-shrink: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .output-terminal .out-line { color: var(--text); }
+    .output-terminal .err-line { color: var(--accent3); }
+    .output-terminal .info-line { color: var(--text-dimmer); }
+    .output-terminal .ok-line { color: var(--accent); }
+    .output-terminal .prompt { color: var(--text-dimmer); }
+
+    /* Completion banner */
+    .lesson-complete-bar {
+      background: rgba(0,229,160,.08);
+      border-top: 1px solid rgba(0,229,160,.2);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+      display: none;
+    }
+    .lesson-complete-bar.visible { display: flex; }
+    .complete-msg {
+      font-size: .85rem;
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .next-lesson-btn {
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .45rem 1.1rem;
+      border-radius: 5px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .next-lesson-btn:hover { box-shadow: 0 0 14px rgba(0,229,160,.4); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .lesson-content { animation: fadeUp .4s ease both; }
+
+    @media (max-width: 900px) {
+      .lesson-layout { grid-template-columns: 1fr; }
+      .lesson-panel { border-right: none; border-bottom: 1px solid var(--border); }
+      .ide-panel { min-height: 520px; }
+      nav { padding: .9rem 1.25rem; }
+      .nav-breadcrumb { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">mindflex<span>.py</span></a>
+    <div class="nav-breadcrumb" id="navBreadcrumb">
+      <a href="index.html">curriculum</a>
+      <span class="sep">/</span>
+      <a href="#" id="breadModuleLink">module_01</a>
+      <span class="sep">/</span>
+      <span id="breadLessonName">lesson</span>
+    </div>
+    <div class="nav-actions">
+      <a href="sandbox.html" class="nav-btn">Open Sandbox</a>
+      <a href="#" id="backToModule" class="nav-btn">← Module</a>
+    </div>
+  </nav>
+
+  <div class="lesson-layout">
+    <!-- LEFT: lesson reading content -->
+    <div class="lesson-panel">
+      <div class="lesson-nav-bar">
+        <div class="lesson-nav-info" id="lessonNavInfo">Lesson 1 of 8</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:12%"></div></div>
+        <div class="lesson-nav-controls">
+          <a href="#" class="lesson-prev" id="prevBtn">← Prev</a>
+          <a href="#" class="lesson-next active" id="nextBtn">Next →</a>
+        </div>
+      </div>
+
+      <div class="lesson-content" id="lessonContent">
+        <!-- injected by JS -->
+      </div>
+    </div>
+
+    <!-- RIGHT: interactive IDE -->
+    <div class="ide-panel">
+      <div class="ide-topbar">
+        <div class="ide-title">
+          <div class="ide-dots">
+            <div class="ide-dot ide-dot-r"></div>
+            <div class="ide-dot ide-dot-y"></div>
+            <div class="ide-dot ide-dot-g"></div>
+          </div>
+          <span class="ide-file" id="ideFilename">lesson.py</span>
+        </div>
+        <div class="ide-actions">
+          <button class="ide-reset-btn" id="resetBtn">↺ Reset</button>
+          <button class="run-btn" id="runBtn">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"/></svg>
+            Run
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-wrapper">
+        <textarea class="editor-area" id="codeEditor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+
+      <div class="output-divider">
+        <span class="output-label">Output</span>
+        <span class="output-status" id="outputStatus">ready</span>
+      </div>
+      <div class="output-terminal" id="outputTerminal">
+        <span class="info-line"># Press Run to execute your code</span>
+      </div>
+
+      <div class="lesson-complete-bar" id="completeBanner">
+        <div class="complete-msg">✓ Great work! Lesson complete.</div>
+        <a href="#" class="next-lesson-btn" id="completeBannerNext">Next Lesson →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ─── Lesson data (same modules structure as lesson-preview.js) ──────────────
+  const LESSONS = {
+    1: {
+      title: "Python Fundamentals",
+      filename: "module_01/fundamentals.py",
+      lessons: [
+        {
+          name: "Welcome to Python",
+          type: "reading",
+          sub: "What Python is, why it matters, and how to run code",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Welcome to Python</h1>
+            <p class="lesson-subtitle">Understand what Python is, why it matters, and get your first program running in the editor.</p>
+            <div class="lesson-body">
+              <h3>What is Python?</h3>
+              <p>Python is a high-level, general-purpose programming language created by Guido van Rossum in 1991. It's designed to be readable and expressive — Python code often reads almost like plain English.</p>
+              <p>It's used everywhere: web backends (Instagram, Pinterest), data science (pandas, numpy), AI/ML (TensorFlow, PyTorch), automation scripts, APIs, and more.</p>
+
+              <h3>Why learn Python first?</h3>
+              <ul>
+                <li>Clean, minimal syntax — less noise, more logic</li>
+                <li>Massive ecosystem of libraries for almost anything</li>
+                <li>Huge demand in the job market</li>
+                <li>Works for scripting, web, data, AI, and system automation</li>
+              </ul>
+
+              <h3>Your first Python program</h3>
+              <p>Every programmer's first program is printing "Hello, World!" — it's tradition. In Python, it's just one line:</p>
+
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">hello.py</span></div>
+                <pre><span class="fn">print</span>(<span class="st">"Hello, World!"</span>)</pre>
+              </div>
+
+              <p>The <code>print()</code> function outputs text to the console. The text <code>"Hello, World!"</code> is a <strong>string</strong> — text wrapped in quotes.</p>
+
+              <div class="tip-box"><strong>💡 TIP</strong><p>Python uses <code>print()</code> to show output. Everything inside the parentheses gets displayed. You can print numbers, text, variables — almost anything.</p></div>
+
+              <h3>Comments</h3>
+              <p>Comments start with <code>#</code> and are ignored by Python. Use them to explain your code:</p>
+
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">comments.py</span></div>
+                <pre><span class="cm"># This is a comment — Python ignores it</span>
+<span class="fn">print</span>(<span class="st">"This line runs"</span>)  <span class="cm"># inline comment</span></pre>
+              </div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">The editor on the right has starter code. Press <strong>Run</strong> to execute it, then try changing the message inside the quotes.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Welcome to Python!
+# Run this code with the Run button above
+
+print("Hello, World!")
+print("Welcome to Mindflex!")
+
+# Try changing the message:
+print("My name is ___")
+`
+        },
+        {
+          name: "Variables & Assignment",
+          type: "reading",
+          sub: "Naming, binding, and rebinding values",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Variables & Assignment</h1>
+            <p class="lesson-subtitle">Variables are named containers for values. Learn how to create and update them.</p>
+            <div class="lesson-body">
+              <h3>What is a variable?</h3>
+              <p>A variable is a name that points to a value in memory. You create one with the <code>=</code> assignment operator:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">variables.py</span></div>
+                <pre><span class="nm">name</span> <span class="op">=</span> <span class="st">"Alice"</span>
+<span class="nm">age</span> <span class="op">=</span> <span class="num">25</span>
+<span class="fn">print</span>(<span class="nm">name</span>, <span class="nm">age</span>)</pre>
+              </div>
+
+              <h3>Naming rules</h3>
+              <ul>
+                <li>Use letters, digits, and underscores</li>
+                <li>Cannot start with a digit</li>
+                <li>Case-sensitive: <code>Name</code> ≠ <code>name</code></li>
+                <li>Convention: use <code>snake_case</code> for variable names</li>
+              </ul>
+
+              <h3>Reassignment</h3>
+              <p>Variables can be rebound to new values at any time:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">rebind.py</span></div>
+                <pre><span class="nm">score</span> <span class="op">=</span> <span class="num">0</span>
+<span class="fn">print</span>(<span class="nm">score</span>)   <span class="cm"># 0</span>
+<span class="nm">score</span> <span class="op">=</span> <span class="num">100</span>
+<span class="fn">print</span>(<span class="nm">score</span>)   <span class="cm"># 100</span></pre>
+              </div>
+
+              <div class="tip-box"><strong>💡 TIP</strong><p>Python is dynamically typed — a variable can hold any type, and the type can change when you reassign it.</p></div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">Create variables for your name, age, and a favorite number. Print them all with one <code>print()</code> call.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Variables & Assignment
+# Create variables and print them
+
+name = "Your Name"
+age = 0
+favorite_number = 42
+
+# Print all three on one line:
+print(name, age, favorite_number)
+
+# Now try reassigning age and print again:
+age = 21
+print("Updated age:", age)
+`
+        },
+        {
+          name: "Numeric Types",
+          type: "reading",
+          sub: "int, float, complex — and arithmetic operators",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Numeric Types</h1>
+            <p class="lesson-subtitle">Python has three numeric types: int, float, and complex. Learn arithmetic operators and number operations.</p>
+            <div class="lesson-body">
+              <h3>int and float</h3>
+              <p><code>int</code> is for whole numbers (no decimal point). <code>float</code> is for numbers with decimals.</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">numbers.py</span></div>
+                <pre><span class="nm">x</span> <span class="op">=</span> <span class="num">10</span>       <span class="cm"># int</span>
+<span class="nm">y</span> <span class="op">=</span> <span class="num">3.14</span>     <span class="cm"># float</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">x</span>))  <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">y</span>))  <span class="cm"># &lt;class 'float'&gt;</span></pre>
+              </div>
+
+              <h3>Arithmetic operators</h3>
+              <ul>
+                <li><code>+</code> addition, <code>-</code> subtraction, <code>*</code> multiplication, <code>/</code> division</li>
+                <li><code>//</code> floor division (rounds down), <code>%</code> modulo (remainder), <code>**</code> exponentiation</li>
+              </ul>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">math.py</span></div>
+                <pre><span class="fn">print</span>(<span class="num">10</span> <span class="op">+</span> <span class="num">3</span>)   <span class="cm"># 13</span>
+<span class="fn">print</span>(<span class="num">10</span> <span class="op">/</span> <span class="num">3</span>)   <span class="cm"># 3.333...</span>
+<span class="fn">print</span>(<span class="num">10</span> <span class="op">//</span> <span class="num">3</span>)  <span class="cm"># 3</span>
+<span class="fn">print</span>(<span class="num">10</span> <span class="op">%</span> <span class="num">3</span>)   <span class="cm"># 1</span>
+<span class="fn">print</span>(<span class="num">2</span> <span class="op">**</span> <span class="num">8</span>)   <span class="cm"># 256</span></pre>
+              </div>
+
+              <div class="warn-box"><strong>⚠️ NOTE</strong><p>Division <code>/</code> always returns a float in Python 3. Use <code>//</code> if you need an integer result.</p></div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">Write a program that calculates how many weeks and remaining days are in 100 days using <code>//</code> and <code>%</code>.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Numeric Types & Arithmetic
+
+# Basic arithmetic
+print(10 + 3)    # addition
+print(10 - 3)    # subtraction
+print(10 * 3)    # multiplication
+print(10 / 3)    # division → float
+print(10 // 3)   # floor division → int
+print(10 % 3)    # modulo (remainder)
+print(2 ** 8)    # exponentiation
+
+# Challenge: how many weeks and days in 100 days?
+days = 100
+weeks = days // 7
+remaining = days % 7
+print(f"{days} days = {weeks} weeks and {remaining} days")
+`
+        },
+        {
+          name: "Strings 101",
+          type: "reading",
+          sub: "Creating, indexing, slicing, and f-strings",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Strings 101</h1>
+            <p class="lesson-subtitle">Strings are sequences of characters. Learn to create, index, slice, and format them.</p>
+            <div class="lesson-body">
+              <h3>Creating strings</h3>
+              <p>Use single <code>'</code>, double <code>"</code>, or triple quotes for multiline strings:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">strings.py</span></div>
+                <pre><span class="nm">s1</span> <span class="op">=</span> <span class="st">'hello'</span>
+<span class="nm">s2</span> <span class="op">=</span> <span class="st">"world"</span>
+<span class="nm">s3</span> <span class="op">=</span> <span class="st">"""multiline
+string"""</span></pre>
+              </div>
+
+              <h3>Indexing and slicing</h3>
+              <p>Access characters by index (0-based). Negative indices count from the end.</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">slicing.py</span></div>
+                <pre><span class="nm">word</span> <span class="op">=</span> <span class="st">"Python"</span>
+<span class="fn">print</span>(<span class="nm">word</span>[<span class="num">0</span>])      <span class="cm"># P</span>
+<span class="fn">print</span>(<span class="nm">word</span>[<span class="op">-</span><span class="num">1</span>])     <span class="cm"># n</span>
+<span class="fn">print</span>(<span class="nm">word</span>[<span class="num">0</span>:<span class="num">3</span>])    <span class="cm"># Pyt</span>
+<span class="fn">print</span>(<span class="nm">word</span>[::<span class="op">-</span><span class="num">1</span>])   <span class="cm"># nohtyP</span></pre>
+              </div>
+
+              <h3>f-strings (formatted string literals)</h3>
+              <p>Put an <code>f</code> before the quote, then embed expressions inside <code>{}</code>:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">fstrings.py</span></div>
+                <pre><span class="nm">name</span> <span class="op">=</span> <span class="st">"Alice"</span>
+<span class="nm">score</span> <span class="op">=</span> <span class="num">98.5</span>
+<span class="fn">print</span>(<span class="st">f"Hello, <span class="nm">{name}</span>! Score: <span class="nm">{score:.1f}</span>"</span>)</pre>
+              </div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">Write your name as a string variable and print it reversed using slicing. Then use an f-string to print "Hi, [name]! You have [length] letters."</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Strings 101
+
+word = "Python"
+
+# Indexing
+print(word[0])      # first character
+print(word[-1])     # last character
+
+# Slicing [start:stop:step]
+print(word[0:3])    # first 3 chars
+print(word[::1])    # full string
+print(word[::-1])   # reversed!
+
+# f-strings
+name = "Alice"
+age = 25
+print(f"Hello, {name}! You are {age} years old.")
+
+# String methods
+print(word.upper())
+print(word.lower())
+print(len(word))    # length
+`
+        },
+        {
+          name: "Booleans & Comparisons",
+          type: "reading",
+          sub: "True/False, comparison operators, and truthiness",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Booleans & Comparisons</h1>
+            <p class="lesson-subtitle">Booleans represent True or False. Learn comparison and logical operators.</p>
+            <div class="lesson-body">
+              <h3>The bool type</h3>
+              <p>There are exactly two boolean values: <code>True</code> and <code>False</code> (capital T/F). Booleans are the result of comparisons and logical operations.</p>
+
+              <h3>Comparison operators</h3>
+              <ul>
+                <li><code>==</code> equal to, <code>!=</code> not equal</li>
+                <li><code>&lt;</code> less than, <code>&gt;</code> greater than</li>
+                <li><code>&lt;=</code> less than or equal, <code>&gt;=</code> greater than or equal</li>
+              </ul>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">booleans.py</span></div>
+                <pre><span class="fn">print</span>(<span class="num">5</span> <span class="op">==</span> <span class="num">5</span>)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="num">5</span> <span class="op">!=</span> <span class="num">3</span>)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="num">5</span> <span class="op">&gt;</span> <span class="num">10</span>)   <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="num">5</span> <span class="op">&lt;=</span> <span class="num">5</span>)   <span class="cm"># True</span></pre>
+              </div>
+
+              <h3>Logical operators: and, or, not</h3>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">logical.py</span></div>
+                <pre><span class="nm">x</span> <span class="op">=</span> <span class="num">7</span>
+<span class="fn">print</span>(<span class="nm">x</span> <span class="op">&gt;</span> <span class="num">5</span> <span class="kw">and</span> <span class="nm">x</span> <span class="op">&lt;</span> <span class="num">10</span>)   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="nm">x</span> <span class="op">&gt;</span> <span class="num">10</span> <span class="kw">or</span> <span class="nm">x</span> <span class="op">==</span> <span class="num">7</span>)  <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">not</span> <span class="kw">True</span>)               <span class="cm"># False</span></pre>
+              </div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">Set a variable <code>age = 20</code> and check: is age between 18 and 65? Print the result.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Booleans & Comparisons
+
+# Comparison operators
+print(5 == 5)     # True
+print(5 != 3)     # True
+print(5 > 10)     # False
+print(5 <= 5)     # True
+
+# Logical operators
+x = 7
+print(x > 5 and x < 10)    # True - between 5 and 10
+print(x > 10 or x == 7)    # True - second condition is True
+print(not True)             # False
+
+# Truthiness
+print(bool(0))      # False - 0 is falsy
+print(bool(1))      # True - non-zero is truthy
+print(bool(""))     # False - empty string is falsy
+print(bool("hi"))   # True
+`
+        },
+        {
+          name: "Type Conversion",
+          type: "reading",
+          sub: "int(), str(), float() and when to use them",
+          content: `
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Type Conversion</h1>
+            <p class="lesson-subtitle">Convert between types using built-in functions. Essential for working with user input and data.</p>
+            <div class="lesson-body">
+              <h3>Explicit conversion</h3>
+              <p>Use <code>int()</code>, <code>float()</code>, <code>str()</code>, <code>bool()</code> to convert between types:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">conversion.py</span></div>
+                <pre><span class="fn">int</span>(<span class="st">"42"</span>)      <span class="cm"># → 42</span>
+<span class="fn">float</span>(<span class="st">"3.14"</span>)  <span class="cm"># → 3.14</span>
+<span class="fn">str</span>(<span class="num">100</span>)       <span class="cm"># → "100"</span>
+<span class="fn">int</span>(<span class="num">3.9</span>)       <span class="cm"># → 3 (truncates!)</span></pre>
+              </div>
+
+              <h3>User input always returns a string</h3>
+              <p>When you read input with <code>input()</code>, it's always a string. Convert it if you need a number:</p>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">input_example.py</span></div>
+                <pre><span class="nm">age_str</span> <span class="op">=</span> <span class="st">"25"</span>   <span class="cm"># pretend this came from input()</span>
+<span class="nm">age</span> <span class="op">=</span> <span class="fn">int</span>(<span class="nm">age_str</span>)
+<span class="fn">print</span>(<span class="nm">age</span> <span class="op">+</span> <span class="num">1</span>)   <span class="cm"># 26</span></pre>
+              </div>
+
+              <div class="warn-box"><strong>⚠️ NOTE</strong><p><code>int("hello")</code> raises a <code>ValueError</code>. Only convert strings that actually contain valid numbers.</p></div>
+
+              <div class="try-it-prompt">
+                <div class="icon">⚡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">Convert the string <code>"1995"</code> to an int, compute how old that makes someone in 2025, and print using an f-string.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Type Conversion
+
+# int() - convert to integer
+print(int("42"))      # string → int
+print(int(3.9))       # float → int (truncates)
+
+# float() - convert to float
+print(float("3.14"))  # string → float
+print(float(10))      # int → float
+
+# str() - convert to string
+print(str(100))       # int → string
+print(str(3.14))      # float → string
+
+# Practical example: year calculation
+birth_year = "1995"
+age = 2025 - int(birth_year)
+print(f"Born in {birth_year}: {age} years old in 2025")
+`
+        },
+        {
+          name: "Your First Program",
+          type: "exercise",
+          sub: "Build a small calculator from scratch",
+          content: `
+            <span class="lesson-type-badge exercise">exercise</span>
+            <h1 class="lesson-title">Your First Program</h1>
+            <p class="lesson-subtitle">Apply everything from Module 1 to build a simple calculator.</p>
+            <div class="lesson-body">
+              <h3>The challenge</h3>
+              <p>Build a calculator that works with two numbers: <code>a = 16</code> and <code>b = 4</code>. Compute and print the following:</p>
+              <ul>
+                <li>Sum of a and b</li>
+                <li>Difference (a minus b)</li>
+                <li>Product</li>
+                <li>Division result (as float)</li>
+                <li>Integer division</li>
+                <li>Remainder of a / b</li>
+                <li>a raised to the power of b</li>
+              </ul>
+
+              <p>Format each result using an f-string like: <code>16 + 4 = 20</code></p>
+
+              <div class="tip-box"><strong>💡 TIP</strong><p>Use f-strings for clean output: <code>f"{a} + {b} = {a + b}"</code></p></div>
+
+              <h3>Expected output</h3>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">output</span></div>
+                <pre>16 + 4 = 20
+16 - 4 = 12
+16 * 4 = 64
+16 / 4 = 4.0
+16 // 4 = 4
+16 % 4 = 0
+16 ** 4 = 65536</pre>
+              </div>
+
+              <div class="try-it-prompt">
+                <div class="icon">🎯</div>
+                <div>
+                  <div class="label">Your task</div>
+                  <div class="desc">Fill in the code on the right to produce the expected output. Try to do it without peeking at the solution!</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Exercise: Build a Calculator
+# Use a = 16 and b = 4
+# Print all 7 operations with f-strings
+
+a = 16
+b = 4
+
+# Addition
+print(f"{a} + {b} = {a + b}")
+
+# Your turn: add subtraction, multiplication,
+# division, floor division, modulo, and power!
+`
+        },
+        {
+          name: "Module 01 Challenge",
+          type: "exercise",
+          sub: "Graded: variables, types, and string formatting",
+          content: `
+            <span class="lesson-type-badge exercise">exercise</span>
+            <h1 class="lesson-title">Module 01 Challenge</h1>
+            <p class="lesson-subtitle">Put it all together. This is your final challenge for Module 1.</p>
+            <div class="lesson-body">
+              <h3>The challenge</h3>
+              <p>Create a "personal profile" program. Using only what you've learned in Module 1, write a script that:</p>
+              <ol>
+                <li>Stores your name, birth year, height in cm, and whether you're a coder (boolean)</li>
+                <li>Calculates your age from birth year (assume current year is 2025)</li>
+                <li>Converts height from cm to inches (<code>1 inch = 2.54 cm</code>)</li>
+                <li>Prints a formatted profile using f-strings</li>
+              </ol>
+
+              <h3>Expected output format</h3>
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">output</span></div>
+                <pre>=== My Profile ===
+Name: Alice
+Age: 25 years old
+Height: 175 cm (68.9 inches)
+Coder: True
+Type check: &lt;class 'str'&gt;</pre>
+              </div>
+
+              <div class="tip-box"><strong>💡 TIP</strong><p>Round inches to 1 decimal: <code>f"{inches:.1f}"</code></p></div>
+
+              <div class="try-it-prompt">
+                <div class="icon">🏆</div>
+                <div>
+                  <div class="label">Challenge</div>
+                  <div class="desc">Write the complete program. Use your own data. Make the output look exactly like the format above.</div>
+                </div>
+              </div>
+            </div>
+          `,
+          starterCode: `# Module 01 Challenge: Personal Profile
+
+# Your data
+name = "Alice"
+birth_year = 2000
+height_cm = 175
+is_coder = True
+
+# Calculations
+current_year = 2025
+age = current_year - birth_year
+height_inches = height_cm / 2.54
+
+# Print the profile
+print("=== My Profile ===")
+print(f"Name: {name}")
+print(f"Age: {age} years old")
+print(f"Height: {height_cm} cm ({height_inches:.1f} inches)")
+print(f"Coder: {is_coder}")
+print(f"Type check: {type(name)}")
+`
+        },
+      ]
+    },
+    2: {
+      title: "Control Flow",
+      filename: "module_02/control_flow.py",
+      lessons: [
+        { name: "if / elif / else", type: "reading", sub: "Branching logic", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">if / elif / else</h1><p class="lesson-subtitle">Control which code runs based on conditions.</p><div class="lesson-body"><h3>Basic if statement</h3><p>Python executes the block if the condition is True:</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">if_basic.py</span></div><pre><span class="nm">score</span> <span class="op">=</span> <span class="num">78</span>\n<span class="kw">if</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">90</span>:\n    <span class="fn">print</span>(<span class="st">"A"</span>)\n<span class="kw">elif</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">80</span>:\n    <span class="fn">print</span>(<span class="st">"B"</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="st">"C or below"</span>)</pre></div><div class="tip-box"><strong>💡 TIP</strong><p>Indentation matters in Python — 4 spaces define the block. Never mix tabs and spaces.</p></div><div class="try-it-prompt"><div class="icon">⚡</div><div><div class="label">Try it yourself</div><div class="desc">Change the score value and observe how the output changes.</div></div></div></div>`, starterCode: `# if / elif / else\nscore = 78\n\nif score >= 90:\n    print("Grade: A")\nelif score >= 80:\n    print("Grade: B")\nelif score >= 70:\n    print("Grade: C")\nelse:\n    print("Grade: F")\n\n# Try different scores!\n` },
+        { name: "Comparison & Logical Operators", type: "reading", sub: "and, or, not", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">Comparison & Logical Operators</h1><p class="lesson-subtitle">Combine conditions with and, or, not.</p><div class="lesson-body"><p>Use <code>and</code>, <code>or</code>, <code>not</code> to combine boolean expressions.</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">logical.py</span></div><pre><span class="nm">age</span> <span class="op">=</span> <span class="num">20</span>\n<span class="nm">has_id</span> <span class="op">=</span> <span class="kw">True</span>\n<span class="kw">if</span> <span class="nm">age</span> <span class="op">&gt;=</span> <span class="num">18</span> <span class="kw">and</span> <span class="nm">has_id</span>:\n    <span class="fn">print</span>(<span class="st">"Entry allowed"</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="st">"Entry denied"</span>)</pre></div></div>`, starterCode: `# Logical Operators\nage = 20\nhas_id = True\nhas_ticket = False\n\nif age >= 18 and has_id:\n    print("Entry allowed")\nelse:\n    print("Entry denied")\n\n# Check if can skip queue (has ticket OR is VIP)\nis_vip = False\nif has_ticket or is_vip:\n    print("Skip the queue!")\nelse:\n    print("Please wait in line.")\n` },
+        { name: "for Loops", type: "reading", sub: "Iterating over sequences and range()", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">for Loops</h1><p class="lesson-subtitle">Repeat code for each item in a sequence.</p><div class="lesson-body"><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">loops.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):\n    <span class="fn">print</span>(<span class="nm">i</span>)\n\n<span class="kw">for</span> <span class="nm">fruit</span> <span class="kw">in</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]:\n    <span class="fn">print</span>(<span class="nm">fruit</span>)</pre></div></div>`, starterCode: `# for Loops\n\n# Loop with range\nfor i in range(5):\n    print(i)\n\n# Loop over a list\nfruits = ["apple", "banana", "cherry", "mango"]\nfor fruit in fruits:\n    print(f"I like {fruit}")\n\n# range(start, stop, step)\nfor n in range(0, 20, 2):\n    print(n, end=" ")  # even numbers\nprint()  # newline\n` },
+        { name: "while Loops", type: "reading", sub: "Looping until a condition is False", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">while Loops</h1><p class="lesson-subtitle">Repeat as long as a condition stays True.</p><div class="lesson-body"><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">while.py</span></div><pre><span class="nm">count</span> <span class="op">=</span> <span class="num">0</span>\n<span class="kw">while</span> <span class="nm">count</span> <span class="op">&lt;</span> <span class="num">5</span>:\n    <span class="fn">print</span>(<span class="nm">count</span>)\n    <span class="nm">count</span> <span class="op">+=</span> <span class="num">1</span></pre></div><div class="warn-box"><strong>⚠️ WARNING</strong><p>Always make sure the condition eventually becomes False, or you'll have an infinite loop!</p></div></div>`, starterCode: `# while Loops\ncount = 0\nwhile count < 5:\n    print(f"Count: {count}")\n    count += 1\n\nprint("Done!")\n\n# Countdown\nn = 10\nwhile n > 0:\n    print(n, end=" ")\n    n -= 1\nprint("Blastoff!")\n` },
+        { name: "break, continue, pass", type: "reading", sub: "Fine-grained loop control", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">break, continue, pass</h1><p class="lesson-subtitle">Control loop execution with these three keywords.</p><div class="lesson-body"><ul><li><code>break</code> — exit the loop immediately</li><li><code>continue</code> — skip to the next iteration</li><li><code>pass</code> — do nothing (placeholder)</li></ul><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">control.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">==</span> <span class="num">5</span>: <span class="kw">break</span>\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>: <span class="kw">continue</span>\n    <span class="fn">print</span>(<span class="nm">i</span>)  <span class="cm"># prints 1, 3</span></pre></div></div>`, starterCode: `# break, continue, pass\n\n# break - stop when we hit 5\nprint("break example:")\nfor i in range(10):\n    if i == 5:\n        break\n    print(i, end=" ")\nprint()\n\n# continue - skip even numbers\nprint("\\ncontinue example (odds only):")\nfor i in range(10):\n    if i % 2 == 0:\n        continue\n    print(i, end=" ")\nprint()\n\n# pass - placeholder\nfor i in range(3):\n    pass  # do nothing for now\nprint("Loop ran 3 times silently")\n` },
+        { name: "Nested Control Structures", type: "reading", sub: "Combining loops and conditionals elegantly", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">Nested Control Structures</h1><p class="lesson-subtitle">Combine loops and conditionals for complex logic.</p><div class="lesson-body"><p>You can nest loops inside loops, or conditionals inside loops:</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">nested.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):\n    <span class="kw">for</span> <span class="nm">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):\n        <span class="fn">print</span>(<span class="nm">i</span>, <span class="nm">j</span>)</pre></div></div>`, starterCode: `# Nested Control Structures\n\n# Multiplication table\nfor i in range(1, 6):\n    for j in range(1, 6):\n        print(f"{i*j:3}", end="")\n    print()  # newline after each row\n\nprint()\n\n# FizzBuzz\nfor n in range(1, 21):\n    if n % 3 == 0 and n % 5 == 0:\n        print("FizzBuzz")\n    elif n % 3 == 0:\n        print("Fizz")\n    elif n % 5 == 0:\n        print("Buzz")\n    else:\n        print(n)\n` },
+        { name: "Control Flow Challenge", type: "exercise", sub: "Graded: FizzBuzz and beyond", content: `<span class="lesson-type-badge exercise">exercise</span><h1 class="lesson-title">Control Flow Challenge</h1><p class="lesson-subtitle">Master challenge: FizzBuzz and number guessing game logic.</p><div class="lesson-body"><h3>Task 1: FizzBuzz</h3><p>Print numbers 1–30. Replace multiples of 3 with "Fizz", multiples of 5 with "Buzz", and multiples of both with "FizzBuzz".</p><h3>Task 2: Find primes</h3><p>Print all prime numbers from 2 to 30 using a nested loop to check divisibility.</p><div class="tip-box"><strong>💡 TIP</strong><p>A prime number is only divisible by 1 and itself. Check all divisors from 2 up to the number.</p></div></div>`, starterCode: `# Control Flow Challenge\n\n# Task 1: FizzBuzz 1-30\nprint("=== FizzBuzz ===")\nfor n in range(1, 31):\n    # Your code here!\n    pass\n\nprint()\n\n# Task 2: Find primes up to 30\nprint("=== Primes up to 30 ===")\nfor n in range(2, 31):\n    is_prime = True\n    for d in range(2, n):\n        if n % d == 0:\n            is_prime = False\n            break\n    if is_prime:\n        print(n, end=" ")\nprint()\n` },
+      ]
+    }
+  };
+
+  // For modules 3-9, generate placeholder lesson data
+  for (let mid = 3; mid <= 9; mid++) {
+    const titles = {3:"Functions & Scope",4:"Data Structures",5:"Object-Oriented Python",6:"File I/O & Exceptions",7:"Modules & Packages",8:"Working with Data",9:"Advanced Topics"};
+    const files = {3:"module_03/functions.py",4:"module_04/lists.py",5:"module_05/classes.py",6:"module_06/file_io.py",7:"module_07/modules.py",8:"module_08/data.py",9:"module_09/decorators.py"};
+    const lessonNames = {
+      3: ["Defining Functions","Parameters & Arguments","*args & **kwargs","Scope & LEGB Rule","Closures","Lambda & Higher-Order Functions","Recursion","Build a Calculator","Functions Challenge"],
+      4: ["Lists Deep Dive","List Methods","List Comprehensions","Tuples","Dictionaries","Dict Comprehensions","Sets","Nested Data Structures","Data Structures Workout","Data Structures Challenge"],
+      5: ["Classes & Instances","Instance vs Class Attributes","Methods: instance, class, static","Inheritance","Dunder / Magic Methods","Encapsulation & Properties","Abstract Classes","Dataclasses","OOP Design Exercise","Composition vs Inheritance","OOP Challenge"],
+      6: ["Opening & Reading Files","Writing & Appending Files","Working with Paths","try / except / finally","Built-in Exception Types","Custom Exceptions","File I/O Challenge"],
+      7: ["import & from…import","Standard Library Tour","Writing Your Own Modules","pip & Virtual Environments","__name__ == '__main__'","Modules Challenge"],
+      8: ["JSON in Python","CSV Reading & Writing","HTTP Requests with requests","Parsing HTML with BeautifulSoup","Working with APIs","Data Cleaning Patterns","Intro to pandas","Data Challenge"],
+      9: ["Decorators","Generators & yield","Context Managers","Type Hints","async / await basics","Async in Practice","Testing with pytest","Mocking & Patching","Performance & Profiling","Memory Management","Advanced Exercises Pack","Capstone Project: CLI App","Capstone Project: Web Scraper","Capstone Project: Data Dashboard"],
+    };
+    LESSONS[mid] = {
+      title: titles[mid],
+      filename: files[mid],
+      lessons: (lessonNames[mid] || []).map((name, i) => ({
+        name,
+        type: i === (lessonNames[mid].length - 1) ? 'exercise' : 'reading',
+        sub: `${name} — ${titles[mid]}`,
+        content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">${name}</h1><p class="lesson-subtitle">Module ${mid} · ${titles[mid]}</p><div class="lesson-body"><p>This lesson covers <strong>${name}</strong> as part of the ${titles[mid]} module. Use the editor on the right to experiment with the starter code.</p><div class="try-it-prompt"><div class="icon">⚡</div><div><div class="label">Try it yourself</div><div class="desc">Run the starter code, modify it, and explore the concepts on your own.</div></div></div></div>`,
+        starterCode: `# ${name}\n# Module ${mid}: ${titles[mid]}\n\n# Starter code for ${name}\nprint("Hello from ${name}!")\n`
+      }))
+    };
+  }
+
+  // ─── URL params ─────────────────────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const moduleId = parseInt(params.get('module')) || 1;
+  const lessonIndex = (parseInt(params.get('lesson')) || 1) - 1; // 0-based
+
+  const mod = LESSONS[moduleId];
+  const totalLessons = mod ? mod.lessons.length : 1;
+  let currentLesson = Math.max(0, Math.min(lessonIndex, totalLessons - 1));
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  function lessonUrl(mId, lIdx) {
+    return `lesson.html?module=${mId}&lesson=${lIdx + 1}`;
+  }
+
+  function loadLesson(lIdx) {
+    if (!mod) return;
+    const lesson = mod.lessons[lIdx];
+    if (!lesson) return;
+
+    currentLesson = lIdx;
+
+    // Breadcrumb
+    document.getElementById('breadModuleLink').textContent = `module_0${moduleId}`;
+    document.getElementById('breadModuleLink').href = `lesson-preview.html?module=${moduleId}`;
+    document.getElementById('breadLessonName').textContent = lesson.name;
+    document.getElementById('backToModule').href = `lesson-preview.html?module=${moduleId}`;
+    document.title = `Mindflex — ${lesson.name}`;
+
+    // Nav info
+    document.getElementById('lessonNavInfo').textContent = `Lesson ${lIdx + 1} of ${totalLessons}`;
+    const pct = ((lIdx + 1) / totalLessons * 100).toFixed(0);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // Prev/Next
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    if (lIdx === 0) {
+      prevBtn.href = `lesson-preview.html?module=${moduleId}`;
+      prevBtn.textContent = '← Module';
+    } else {
+      prevBtn.href = lessonUrl(moduleId, lIdx - 1);
+      prevBtn.textContent = '← Prev';
+    }
+    if (lIdx === totalLessons - 1) {
+      nextBtn.href = `lesson-preview.html?module=${moduleId + 1 > 9 ? 1 : moduleId + 1}`;
+      nextBtn.textContent = 'Next Module →';
+    } else {
+      nextBtn.href = lessonUrl(moduleId, lIdx + 1);
+      nextBtn.textContent = 'Next →';
+    }
+
+    // Content
+    document.getElementById('lessonContent').innerHTML = lesson.content;
+
+    // IDE
+    document.getElementById('ideFilename').textContent = mod.filename.split('/')[1] || mod.filename;
+    document.getElementById('codeEditor').value = lesson.starterCode || '';
+    resetOutput();
+    document.getElementById('completeBanner').classList.remove('visible');
+
+    // Complete banner
+    const bannerNext = document.getElementById('completeBannerNext');
+    if (lIdx < totalLessons - 1) {
+      bannerNext.href = lessonUrl(moduleId, lIdx + 1);
+      bannerNext.textContent = 'Next Lesson →';
+    } else {
+      bannerNext.href = `lesson-preview.html?module=${moduleId}`;
+      bannerNext.textContent = 'Back to Module →';
+    }
+
+    // Update URL
+    window.history.replaceState({}, '', lessonUrl(moduleId, lIdx));
+    window.scrollTo(0, 0);
+    document.querySelector('.lesson-content').scrollTop = 0;
+  }
+
+  // ─── Python execution via Pyodide ────────────────────────────────────────────
+  let pyodide = null;
+  let pyodideReady = false;
+
+  async function loadPyodide() {
+    try {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+      document.head.appendChild(script);
+      await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
+      pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' });
+      pyodideReady = true;
+      setStatus('ready', 'ok');
+    } catch(e) {
+      setStatus('pyodide unavailable — using fallback', '');
+    }
+  }
+  loadPyodide();
+
+  function setStatus(msg, cls) {
+    const el = document.getElementById('outputStatus');
+    el.textContent = msg;
+    el.className = 'output-status' + (cls ? ' ' + cls : '');
+  }
+
+  function resetOutput() {
+    document.getElementById('outputTerminal').innerHTML = '<span class="info-line"># Press Run to execute your code</span>';
+    setStatus('ready', '');
+  }
+
+  function appendOutput(text, cls) {
+    const terminal = document.getElementById('outputTerminal');
+    const lines = text.split('\n');
+    lines.forEach((line, i) => {
+      if (i === lines.length - 1 && line === '') return;
+      const span = document.createElement('div');
+      span.className = cls;
+      span.textContent = line;
+      terminal.appendChild(span);
+    });
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  async function runCode() {
+    const code = document.getElementById('codeEditor').value;
+    const terminal = document.getElementById('outputTerminal');
+    terminal.innerHTML = '';
+    setStatus('running…', '');
+
+    const div = document.createElement('div');
+    div.className = 'prompt';
+    div.textContent = '$ python lesson.py';
+    terminal.appendChild(div);
+
+    if (pyodideReady && pyodide) {
+      try {
+        let stdout = '';
+        let stderr = '';
+        pyodide.setStdout({ batched: (s) => { stdout += s + '\n'; } });
+        pyodide.setStderr({ batched: (s) => { stderr += s + '\n'; } });
+        await pyodide.runPythonAsync(code);
+        if (stdout) appendOutput(stdout, 'out-line');
+        if (stderr) appendOutput(stderr, 'err-line');
+        if (!stdout && !stderr) {
+          appendOutput('(no output)', 'info-line');
+        }
+        setStatus('exit 0', 'ok');
+        document.getElementById('completeBanner').classList.add('visible');
+      } catch(e) {
+        appendOutput(String(e), 'err-line');
+        setStatus('error', 'err');
+      }
+    } else {
+      // Fallback: basic print() simulation
+      try {
+        const printLines = [];
+        const fakePrint = (...args) => printLines.push(args.map(String).join(' '));
+        const fn = new Function('print', code.replace(/print\s*\(/g, 'print('));
+        fn(fakePrint);
+        if (printLines.length) {
+          printLines.forEach(l => appendOutput(l, 'out-line'));
+        } else {
+          appendOutput('(no output)', 'info-line');
+        }
+        setStatus('exit 0 (basic mode)', 'ok');
+        document.getElementById('completeBanner').classList.add('visible');
+      } catch(e) {
+        appendOutput(String(e), 'err-line');
+        setStatus('error', 'err');
+      }
+    }
+  }
+
+  // ─── Tab key support ──────────────────────────────────────────────────────
+  document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+      this.selectionStart = this.selectionEnd = start + 4;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      runCode();
+    }
+  });
+
+  // ─── Buttons ──────────────────────────────────────────────────────────────
+  document.getElementById('runBtn').addEventListener('click', runCode);
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!mod) return;
+    document.getElementById('codeEditor').value = mod.lessons[currentLesson]?.starterCode || '';
+    resetOutput();
+  });
+
+  // ─── Init ─────────────────────────────────────────────────────────────────
+  if (mod) {
+    loadLesson(currentLesson);
+  } else {
+    document.getElementById('lessonContent').innerHTML = '<p style="color:var(--text-dim);padding:2rem;">Module not found.</p>';
+  }
+  </script>
+</body>
+</html>
