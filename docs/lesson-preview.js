@@ -438,14 +438,14 @@ function loadModule(id) {
         <div class="lessons-section-title">Lessons</div>
         <div class="lesson-list">
         ${mod.lessonList.map((l, i) => `
-            <div class="lesson-card">
+            <a class="lesson-card" href="lesson.html?module=${mod.id}&lesson=${i + 1}" style="text-decoration:none;color:inherit;">
             <span class="lesson-num">${String(i + 1).padStart(2, '0')}</span>
             <div class="lesson-info">
                 <div class="lesson-name">${l.name}</div>
                 <div class="lesson-sub">${l.sub}</div>
             </div>
             <span class="lesson-type ${l.type}">${l.type}</span>
-            </div>
+            </a>
         `).join('')}
         </div>
     </div>
@@ -468,7 +468,7 @@ function loadModule(id) {
         <h3>Ready to start ${mod.title}?</h3>
         <p>Open the first lesson in the browser editor — no install needed.</p>
         </div>
-        <a href="index.html#start" class="btn btn-primary">Begin Module →</a>
+        <a href="lesson.html?module=${mod.id}&lesson=1" class="btn btn-primary">Begin Module →</a>
     </div>
     `;
 
