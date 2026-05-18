@@ -6,7 +6,6 @@
   <title>Mindflex — Lesson</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="mindflex.png">
   <style>
     :root {
       --bg: #0a0c10;
@@ -422,24 +421,80 @@
       display: flex;
       flex-direction: column;
     }
-    .editor-area {
+    /* CodeMirror IDE styles */
+    #lessonCmEditor {
       flex: 1;
-      background: #0d0f14;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: .82rem;
-      line-height: 1.9;
-      padding: 1.25rem 1.5rem;
-      resize: none;
-      width: 100%;
-      tab-size: 4;
-      overflow-y: auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .cm-editor {
+      flex: 1;
+      height: 100%;
+      font-family: var(--mono) !important;
+      font-size: .82rem !important;
+      background: #0d0f14 !important;
+    }
+    .cm-editor.cm-focused { outline: none !important; }
+    .cm-scroller {
+      overflow: auto !important;
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
+      line-height: 1.9 !important;
     }
-    .editor-area::selection { background: rgba(0,229,160,.2); }
+    .cm-content { padding: .8rem 0 !important; caret-color: var(--accent) !important; }
+    .cm-line { padding: 0 1.25rem 0 0 !important; }
+    /* Gutter / line numbers — vertically stacked */
+    .cm-gutters {
+      background: #0d0f14 !important;
+      border-right: 1px solid var(--border) !important;
+      color: var(--text-dimmer) !important;
+      user-select: none !important;
+      display: flex !important;
+      flex-direction: row !important;
+      min-width: 0 !important;
+    }
+    .cm-lineNumbers {
+      display: flex !important;
+      flex-direction: column !important;
+      min-width: 44px !important;
+    }
+    .cm-lineNumbers .cm-gutterElement {
+      display: block !important;
+      width: 100% !important;
+      padding: 0 10px 0 8px !important;
+      font-family: var(--mono) !important;
+      font-size: .75rem !important;
+      line-height: 1.9 !important;
+      color: var(--text-dimmer) !important;
+      text-align: right !important;
+      white-space: nowrap !important;
+    }
+    .cm-activeLineGutter { background: rgba(0,229,160,.06) !important; color: var(--accent) !important; }
+    .cm-activeLine { background: rgba(0,229,160,.04) !important; }
+    .cm-selectionBackground { background: rgba(0,229,160,.18) !important; }
+    .cm-cursor { border-left-color: var(--accent) !important; border-left-width: 2px !important; }
+    /* Syntax colours — match lesson snippet palette exactly */
+    .cm-keyword   { color: #ff79c6 !important; }
+    .cm-string, .cm-string2 { color: #f1fa8c !important; }
+    .cm-comment   { color: #6272a4 !important; font-style: italic; }
+    .cm-number    { color: #bd93f9 !important; }
+    .cm-operator  { color: #ff79c6 !important; }
+    .cm-def       { color: #50fa7b !important; }
+    .cm-builtin   { color: #50fa7b !important; }
+    .cm-typeName, .cm-className { color: #00e5a0 !important; }
+    .cm-variableName { color: #e8eaf2 !important; }
+    .cm-propertyName { color: #4f8cff !important; }
+    .cm-meta      { color: #ff79c6 !important; }
+    .cm-punctuation { color: #7a7f96 !important; }
+    .cm-matchingBracket { background: rgba(0,229,160,.15) !important; color: var(--accent) !important; border-radius: 2px; }
+    /* Autocomplete popup */
+    .cm-tooltip { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; box-shadow: 0 8px 32px rgba(0,0,0,.5) !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul { font-family: var(--mono) !important; font-size: .76rem !important; max-height: 200px !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul > li { padding: .3rem .75rem !important; color: var(--text-dim) !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected] { background: rgba(0,229,160,.12) !important; color: var(--text) !important; }
+    .cm-completionDetail { color: var(--text-dimmer) !important; font-size: .68rem !important; }
 
     /* Output terminal */
     .output-divider {
@@ -593,7 +648,7 @@
       </div>
 
       <div class="editor-wrapper">
-        <textarea class="editor-area" id="codeEditor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+        <div id="lessonCmEditor"></div>
       </div>
 
       <div class="output-divider">
@@ -1220,7 +1275,7 @@ print(f"Type check: {type(name)}")
 
     // IDE
     document.getElementById('ideFilename').textContent = mod.filename.split('/')[1] || mod.filename;
-    document.getElementById('codeEditor').value = lesson.starterCode || '';
+    setEditorCode(lesson.starterCode || '');
     resetOutput();
     document.getElementById('completeBanner').classList.remove('visible');
 
@@ -1284,7 +1339,7 @@ print(f"Type check: {type(name)}")
   }
 
   async function runCode() {
-    const code = document.getElementById('codeEditor').value;
+    const code = getEditorCode();
     const terminal = document.getElementById('outputTerminal');
     terminal.innerHTML = '';
     setStatus('running…', '');
@@ -1333,26 +1388,181 @@ print(f"Type check: {type(name)}")
     }
   }
 
-  // ─── Tab key support ──────────────────────────────────────────────────────
-  document.getElementById('codeEditor').addEventListener('keydown', function(e) {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = this.selectionStart;
-      const end = this.selectionEnd;
-      this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-      this.selectionStart = this.selectionEnd = start + 4;
+  // ─── CodeMirror 6 Editor setup ──────────────────────────────────────────────
+  // Loaded asynchronously via ES modules from esm.sh
+  let lessonView = null;  // will hold the EditorView instance
+
+  async function initCodeMirror(initialCode) {
+    const [
+      { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection },
+      { EditorState },
+      { defaultKeymap, indentWithTab, history, historyKeymap },
+      { python },
+      { syntaxHighlighting, bracketMatching, indentOnInput },
+      { HighlightStyle },
+      { tags },
+      { autocompletion, completionKeymap },
+    ] = await Promise.all([
+      import('https://esm.sh/@codemirror/view@6.36.5'),
+      import('https://esm.sh/@codemirror/state@6.5.2'),
+      import('https://esm.sh/@codemirror/commands@6.8.1'),
+      import('https://esm.sh/@codemirror/lang-python@6.1.9'),
+      import('https://esm.sh/@codemirror/language@6.11.0'),
+      import('https://esm.sh/@codemirror/language@6.11.0'),
+      import('https://esm.sh/@lezer/highlight@1.2.1'),
+      import('https://esm.sh/@codemirror/autocomplete@6.18.6'),
+    ]);
+
+    // Syntax highlight style — exact same palette as the lesson code snippets
+    const mindflexTheme = HighlightStyle.define([
+      { tag: tags.keyword,                              color: '#ff79c6' },
+      { tag: tags.controlKeyword,                       color: '#ff79c6' },
+      { tag: tags.operatorKeyword,                      color: '#ff79c6' },
+      { tag: tags.definitionKeyword,                    color: '#ff79c6' },
+      { tag: tags.moduleKeyword,                        color: '#ff79c6' },
+      { tag: tags.self,                                 color: '#ff79c6', fontStyle: 'italic' },
+      { tag: tags.bool,                                 color: '#bd93f9' },
+      { tag: tags.null,                                 color: '#bd93f9' },
+      { tag: tags.number,                               color: '#bd93f9' },
+      { tag: tags.float,                                color: '#bd93f9' },
+      { tag: tags.string,                               color: '#f1fa8c' },
+      { tag: tags.regexp,                               color: '#f1fa8c' },
+      { tag: tags.escape,                               color: '#ff79c6' },
+      { tag: tags.special(tags.string),                 color: '#f1fa8c' },
+      { tag: tags.comment,                              color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.lineComment,                          color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.blockComment,                         color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.function(tags.variableName),          color: '#50fa7b' },
+      { tag: tags.function(tags.definition(tags.variableName)), color: '#50fa7b' },
+      { tag: tags.function(tags.propertyName),          color: '#50fa7b' },
+      { tag: tags.definition(tags.variableName),        color: '#e8eaf2' },
+      { tag: tags.definition(tags.propertyName),        color: '#4f8cff' },
+      { tag: tags.className,                            color: '#00e5a0' },
+      { tag: tags.definition(tags.className),           color: '#00e5a0' },
+      { tag: tags.typeName,                             color: '#00e5a0' },
+      { tag: tags.typeOperator,                         color: '#ff79c6' },
+      { tag: tags.propertyName,                         color: '#4f8cff' },
+      { tag: tags.variableName,                         color: '#e8eaf2' },
+      { tag: tags.attributeName,                        color: '#4f8cff' },
+      { tag: tags.namespace,                            color: '#00e5a0' },
+      { tag: tags.decorator,                            color: '#ff79c6' },
+      { tag: tags.operator,                             color: '#ff79c6' },
+      { tag: tags.arithmeticOperator,                   color: '#ff79c6' },
+      { tag: tags.compareOperator,                      color: '#ff79c6' },
+      { tag: tags.bitwiseOperator,                      color: '#ff79c6' },
+      { tag: tags.logicOperator,                        color: '#ff79c6' },
+      { tag: tags.punctuation,                          color: '#7a7f96' },
+      { tag: tags.bracket,                              color: '#7a7f96' },
+      { tag: tags.paren,                                color: '#7a7f96' },
+      { tag: tags.squareBracket,                        color: '#7a7f96' },
+      { tag: tags.brace,                                color: '#7a7f96' },
+      { tag: tags.separator,                            color: '#7a7f96' },
+      { tag: tags.invalid,                              color: '#ff5e7e' },
+    ]);
+
+    // Python autocomplete
+    const pyBuiltins = [
+      'print','len','range','type','int','float','str','bool','list','dict',
+      'tuple','set','input','open','enumerate','zip','map','filter','sorted',
+      'reversed','sum','min','max','abs','round','isinstance','issubclass',
+      'hasattr','getattr','setattr','repr','id','hash','iter','next',
+      'any','all','dir','vars','callable','staticmethod','classmethod',
+      'property','super',
+    ].map(label => ({ label, type: 'function', detail: 'builtin' }));
+
+    const pyKeywords = [
+      'and','as','assert','async','await','break','class','continue','def',
+      'del','elif','else','except','finally','for','from','global','if',
+      'import','in','is','lambda','nonlocal','not','or','pass','raise',
+      'return','try','while','with','yield','True','False','None','self',
+    ].map(label => ({ label, type: 'keyword' }));
+
+    function pythonCompletions(context) {
+      const word = context.matchBefore(/\w*/);
+      if (!word || (word.from === word.to && !context.explicit)) return null;
+      const code = context.state.doc.toString();
+      const identifiers = [...new Set(code.match(/\b[a-zA-Z_]\w*/g) || [])];
+      const docWords = identifiers
+        .filter(w => w !== word.text && !pyKeywords.find(k=>k.label===w) && !pyBuiltins.find(b=>b.label===w))
+        .map(label => ({ label, type: 'variable' }));
+      return { from: word.from, options: [...pyKeywords, ...pyBuiltins, ...docWords], validFor: /^\w*$/ };
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      runCode();
+
+    const host = document.getElementById('lessonCmEditor');
+    if (!host) return;
+
+    lessonView = new EditorView({
+      state: EditorState.create({
+        doc: initialCode || '',
+        extensions: [
+          lineNumbers(),
+          highlightActiveLine(),
+          highlightActiveLineGutter(),
+          history(),
+          drawSelection(),
+          indentOnInput(),
+          bracketMatching(),
+          python(),
+          syntaxHighlighting(mindflexTheme),
+          autocompletion({ override: [pythonCompletions], activateOnTyping: true, maxRenderedOptions: 10 }),
+          keymap.of([
+            ...defaultKeymap,
+            ...historyKeymap,
+            ...completionKeymap,
+            indentWithTab,
+            { key: 'Ctrl-Enter', run: () => { runCode(); return true; } },
+            { key: 'Mod-Enter',  run: () => { runCode(); return true; } },
+          ]),
+          EditorView.theme({
+            '&': { background: '#0d0f14', color: '#e8eaf2', height: '100%' },
+            '.cm-scroller': { overflow: 'auto', fontFamily: "'Space Mono', monospace", fontSize: '0.82rem', lineHeight: '1.9' },
+            '.cm-gutters': { background: '#0d0f14', borderRight: '1px solid #1f2330', color: '#3a3f56', display: 'flex', flexDirection: 'row' },
+            '.cm-lineNumbers': { display: 'flex', flexDirection: 'column', minWidth: '44px' },
+            '.cm-lineNumbers .cm-gutterElement': { display: 'block', width: '100%', padding: '0 10px 0 8px', textAlign: 'right', fontSize: '0.75rem', whiteSpace: 'nowrap' },
+            '.cm-activeLineGutter': { background: 'rgba(0,229,160,0.06)', color: '#00e5a0' },
+            '.cm-activeLine': { background: 'rgba(0,229,160,0.04)' },
+            '&.cm-focused .cm-cursor': { borderLeftColor: '#00e5a0', borderLeftWidth: '2px' },
+            '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: 'rgba(0,229,160,0.18)' },
+            '.cm-tooltip.cm-tooltip-autocomplete': { background: '#181b22', border: '1px solid #1f2330', borderRadius: '6px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' },
+            '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { fontFamily: "'Space Mono',monospace", fontSize: '0.75rem', padding: '0.3rem 0.75rem', color: '#7a7f96' },
+            '.cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected]': { background: 'rgba(0,229,160,0.12)', color: '#e8eaf2' },
+            '.cm-completionDetail': { color: '#3a3f56', fontSize: '0.68rem' },
+          }),
+        ],
+      }),
+      parent: host,
+    });
+
+    cmReady = true;
+
+    // If a lesson was loaded before CM was ready, apply its code now
+    if (pendingCode !== null) {
+      setEditorCode(pendingCode);
+      pendingCode = null;
     }
-  });
+  }
+
+  let cmReady = false;
+  let pendingCode = null;
+
+  function getEditorCode() {
+    if (lessonView) return lessonView.state.doc.toString();
+    return pendingCode || '';
+  }
+
+  function setEditorCode(code) {
+    if (lessonView) {
+      lessonView.dispatch({ changes: { from: 0, to: lessonView.state.doc.length, insert: code } });
+    } else {
+      pendingCode = code;
+    }
+  }
 
   // ─── Buttons ──────────────────────────────────────────────────────────────
   document.getElementById('runBtn').addEventListener('click', runCode);
   document.getElementById('resetBtn').addEventListener('click', () => {
     if (!mod) return;
-    document.getElementById('codeEditor').value = mod.lessons[currentLesson]?.starterCode || '';
+    setEditorCode(mod.lessons[currentLesson]?.starterCode || '');
     resetOutput();
   });
 
@@ -1362,6 +1572,9 @@ print(f"Type check: {type(name)}")
   } else {
     document.getElementById('lessonContent').innerHTML = '<p style="color:var(--text-dim);padding:2rem;">Module not found.</p>';
   }
+
+  // Start CodeMirror after lesson data is ready
+  initCodeMirror(mod?.lessons[currentLesson]?.starterCode || '');
   </script>
 </body>
 </html>
