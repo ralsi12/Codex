@@ -6,7 +6,6 @@
   <title>Mindflex — Python Sandbox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="mindflex.png">
   <style>
     :root {
       --bg: #0a0c10;
@@ -21,6 +20,17 @@
       --text-dimmer: #3a3f56;
       --mono: 'Space Mono', monospace;
       --sans: 'Syne', sans-serif;
+      /* highlight colors matching lesson snippets */
+      --hl-kw:   #ff79c6;
+      --hl-fn:   #50fa7b;
+      --hl-str:  #f1fa8c;
+      --hl-cm:   #6272a4;
+      --hl-nm:   #4f8cff;
+      --hl-num:  #bd93f9;
+      --hl-op:   #ff79c6;
+      --hl-cls:  #00e5a0;
+      --hl-dec:  #ff79c6;
+      --hl-self: #ff79c6;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
@@ -56,11 +66,7 @@
       flex-shrink: 0;
       gap: 1rem;
     }
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
+    .nav-left { display: flex; align-items: center; gap: 1.25rem; }
     .nav-logo {
       font-family: var(--mono);
       font-size: 1.1rem;
@@ -78,11 +84,7 @@
       color: var(--accent2);
       border: 1px solid rgba(79,140,255,.2);
     }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-    }
+    .nav-right { display: flex; align-items: center; gap: .75rem; }
     .nav-link {
       font-family: var(--mono);
       font-size: .72rem;
@@ -108,16 +110,8 @@
       flex-shrink: 0;
       gap: 1rem;
     }
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .file-tabs {
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-    }
+    .toolbar-left { display: flex; align-items: center; gap: 1rem; }
+    .file-tabs { display: flex; align-items: center; gap: .3rem; }
     .file-tab {
       font-family: var(--mono);
       font-size: .7rem;
@@ -139,9 +133,7 @@
     .file-tab.active::after {
       content: '';
       position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
+      bottom: -1px; left: 0; right: 0;
       height: 1px;
       background: #0d0f14;
     }
@@ -157,11 +149,7 @@
       transition: all .15s;
     }
     .add-tab-btn:hover { color: var(--accent); border-color: rgba(0,229,160,.3); }
-    .toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-    }
+    .toolbar-right { display: flex; align-items: center; gap: .6rem; }
     .snippet-select {
       font-family: var(--mono);
       font-size: .7rem;
@@ -221,64 +209,127 @@
       overflow: hidden;
     }
 
-    /* EDITOR */
+    /* EDITOR PANE */
     .editor-pane {
       display: flex;
       flex-direction: column;
       overflow: hidden;
       border-right: 1px solid var(--border);
     }
-    .line-numbers-row {
+    #cmEditor {
+      flex: 1;
+      overflow: hidden;
       display: flex;
-      flex: 1;
-      overflow: hidden;
+      flex-direction: column;
     }
-    .line-numbers {
-      padding: 1.1rem .5rem 1.1rem .75rem;
-      font-family: var(--mono);
-      font-size: .82rem;
-      line-height: 1.9;
-      color: var(--text-dimmer);
-      text-align: right;
-      user-select: none;
-      background: #0d0f14;
-      border-right: 1px solid var(--border);
-      overflow: hidden;
-      min-width: 40px;
-    }
-    .code-editor {
+
+    /* CodeMirror overrides */
+    .cm-editor {
       flex: 1;
-      background: #0d0f14;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: .82rem;
-      line-height: 1.9;
-      padding: 1.1rem 1.25rem;
-      resize: none;
-      width: 100%;
-      tab-size: 4;
-      overflow-y: auto;
+      height: 100%;
+      font-family: var(--mono) !important;
+      font-size: .82rem !important;
+      background: #0d0f14 !important;
+    }
+    .cm-editor.cm-focused { outline: none !important; }
+    .cm-scroller {
+      overflow: auto !important;
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
+      line-height: 1.9 !important;
     }
-    .code-editor::selection { background: rgba(0,229,160,.18); }
+    .cm-content { padding: 1.1rem 0 !important; caret-color: var(--accent) !important; }
+    .cm-line { padding: 0 1.25rem 0 0 !important; }
 
-    /* RIGHT SIDE — output + cheatsheet */
-    .right-pane {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    /* Gutter / line numbers — each number vertically stacked, one per line */
+    .cm-gutters {
+      background: #0d0f14 !important;
+      border-right: 1px solid var(--border) !important;
+      color: var(--text-dimmer) !important;
+      user-select: none !important;
+      display: flex !important;
+      flex-direction: row !important;
+      min-width: 0 !important;
+      padding-top: 0 !important;
+    }
+    .cm-lineNumbers {
+      display: flex !important;
+      flex-direction: column !important;
+      min-width: 44px !important;
+    }
+    .cm-lineNumbers .cm-gutterElement {
+      display: block !important;
+      width: 100% !important;
+      padding: 0 10px 0 8px !important;
+      font-family: var(--mono) !important;
+      font-size: .78rem !important;
+      line-height: 1.9 !important;
+      color: var(--text-dimmer) !important;
+      text-align: right !important;
+      white-space: nowrap !important;
+    }
+    .cm-activeLineGutter {
+      background: rgba(0,229,160,.06) !important;
+      color: var(--accent) !important;
+    }
+    .cm-activeLine { background: rgba(0,229,160,.04) !important; }
+    .cm-selectionBackground { background: rgba(0,229,160,.18) !important; }
+    .cm-cursor { border-left-color: var(--accent) !important; }
+
+    /* ── Syntax token colors matching lesson snippets ── */
+    /* keywords: if, for, def, class, return, import, etc. */
+    .cm-keyword { color: var(--hl-kw) !important; }
+    /* built-in functions: print, len, range, etc. */
+    .cm-name.cm-variableName.cm-function { color: var(--hl-fn) !important; }
+    .cm-builtin { color: var(--hl-fn) !important; }
+    /* strings */
+    .cm-string { color: var(--hl-str) !important; }
+    .cm-string2 { color: var(--hl-str) !important; }
+    /* comments */
+    .cm-comment { color: var(--hl-cm) !important; font-style: italic; }
+    /* numbers */
+    .cm-number { color: var(--hl-num) !important; }
+    /* operators */
+    .cm-operator { color: var(--hl-op) !important; }
+    /* function defs */
+    .cm-def { color: var(--hl-fn) !important; }
+    /* class names */
+    .cm-typeName { color: var(--hl-cls) !important; }
+    .cm-className { color: var(--hl-cls) !important; }
+    /* punctuation */
+    .cm-punctuation { color: var(--text-dim) !important; }
+    /* variables / identifiers */
+    .cm-variableName { color: var(--text) !important; }
+    /* property access */
+    .cm-propertyName { color: var(--hl-nm) !important; }
+    /* decorators */
+    .cm-meta { color: var(--hl-dec) !important; }
+    /* self */
+    .cm-self { color: var(--hl-self) !important; }
+    /* bracket matching */
+    .cm-matchingBracket {
+      background: rgba(0,229,160,.15) !important;
+      color: var(--accent) !important;
+      border-radius: 2px;
     }
 
-    /* Output */
-    .output-section {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-    }
+    /* Autocomplete popup */
+    .cm-tooltip { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; box-shadow: 0 8px 32px rgba(0,0,0,.5) !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul { font-family: var(--mono) !important; font-size: .78rem !important; max-height: 220px !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul > li { padding: .3rem .75rem !important; color: var(--text-dim) !important; display: flex !important; align-items: center !important; gap: .5rem !important; }
+    .cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected] { background: rgba(0,229,160,.12) !important; color: var(--text) !important; }
+    .cm-completionLabel { font-family: var(--mono) !important; }
+    .cm-completionDetail { color: var(--text-dimmer) !important; font-size: .7rem !important; margin-left: auto !important; }
+    .cm-completionIcon { width: 14px !important; font-size: .7rem !important; }
+    .cm-completionIcon-keyword::after { content: "kw"; color: var(--hl-kw) !important; font-size: .62rem !important; }
+    .cm-completionIcon-function::after { content: "fn"; color: var(--hl-fn) !important; font-size: .62rem !important; }
+    .cm-completionIcon-variable::after { content: "ab"; color: var(--hl-nm) !important; font-size: .62rem !important; }
+    .cm-completionIcon-class::after { content: "cl"; color: var(--hl-cls) !important; font-size: .62rem !important; }
+    .cm-completionIcon-text::after { content: "tx"; color: var(--text-dimmer) !important; font-size: .62rem !important; }
+
+    /* RIGHT SIDE */
+    .right-pane { display: flex; flex-direction: column; overflow: hidden; }
+    .output-section { display: flex; flex-direction: column; flex: 1; min-height: 0; }
     .output-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -298,11 +349,7 @@
       align-items: center;
       gap: .5rem;
     }
-    .output-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--text-dimmer);
-    }
+    .output-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dimmer); }
     .output-dot.running { background: #ffbd2e; animation: pulse 1s infinite; }
     .output-dot.ok { background: var(--accent); }
     .output-dot.err { background: var(--accent3); }
@@ -317,7 +364,6 @@
       transition: color .15s;
     }
     .output-clear-btn:hover { color: var(--text-dim); }
-
     .output-terminal {
       flex: 1;
       background: #070910;
@@ -345,7 +391,7 @@
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
       flex-shrink: 0;
-      max-height: 280px;
+      max-height: 260px;
     }
     .cheat-header {
       font-family: var(--mono);
@@ -359,12 +405,7 @@
       top: 0;
       background: var(--surface);
     }
-    .cheat-items {
-      padding: .5rem .75rem .75rem;
-      display: flex;
-      flex-direction: column;
-      gap: .25rem;
-    }
+    .cheat-items { padding: .5rem .75rem .75rem; display: flex; flex-direction: column; gap: .25rem; }
     .cheat-item {
       display: flex;
       align-items: baseline;
@@ -375,24 +416,13 @@
       transition: background .15s;
     }
     .cheat-item:hover { background: var(--surface2); }
-    .cheat-code {
-      font-family: var(--mono);
-      font-size: .68rem;
-      color: var(--accent2);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .cheat-desc {
-      font-size: .72rem;
-      color: var(--text-dimmer);
-      line-height: 1.3;
-    }
+    .cheat-code { font-family: var(--mono); font-size: .68rem; color: var(--hl-nm); white-space: nowrap; flex-shrink: 0; }
+    .cheat-desc { font-size: .72rem; color: var(--text-dimmer); line-height: 1.3; }
 
     /* Pyodide loading overlay */
     .loading-overlay {
       position: fixed;
-      bottom: 1rem;
-      right: 1rem;
+      bottom: 1rem; right: 1rem;
       z-index: 50;
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -419,7 +449,6 @@
     @media (max-width: 800px) {
       .sandbox-body { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
       .editor-pane { border-right: none; border-bottom: 1px solid var(--border); }
-      .right-pane { overflow: hidden; }
       nav { padding: .75rem 1rem; }
       .shortcut-hint { display: none; }
     }
@@ -464,15 +493,9 @@
   </div>
 
   <div class="sandbox-body">
-    <!-- Editor -->
     <div class="editor-pane">
-      <div class="line-numbers-row">
-        <div class="line-numbers" id="lineNumbers">1</div>
-        <textarea class="code-editor" id="codeEditor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
-      </div>
+      <div id="cmEditor"></div>
     </div>
-
-    <!-- Right pane: output + cheatsheet -->
     <div class="right-pane">
       <div class="output-section">
         <div class="output-header">
@@ -486,7 +509,6 @@
           <span class="info-line"># Python sandbox — write code and press Run</span>
         </div>
       </div>
-
       <div class="cheatsheet">
         <div class="cheat-header">Quick Reference</div>
         <div class="cheat-items" id="cheatItems"></div>
@@ -494,393 +516,375 @@
     </div>
   </div>
 
-  <!-- Pyodide loading indicator -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
     Loading Python runtime…
   </div>
 
-  <script>
-  // ─── Snippets ─────────────────────────────────────────────────────────────
-  const SNIPPETS = {
-    lists: `# Module 4 · Lists in Python
+  <!-- CodeMirror 6 via CDN bundles -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" crossorigin="anonymous"></script>
 
-# Create a list of items
-fruits = ["apple", "banana", "cherry"]
+  <script type="module">
+    // Use esm.sh CDN for CodeMirror 6 modules
+    const CM_BASE = 'https://esm.sh';
 
-# Access elements by index (0-based)
-print(fruits[0])   # → "apple"
-print(fruits[-1])  # → "cherry"
+    const [
+      { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection },
+      { EditorState, Compartment },
+      { defaultKeymap, indentWithTab, history, historyKeymap },
+      { python },
+      { syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, indentOnInput },
+      { autocompletion, completionKeymap, closeCompletion },
+      { lintKeymap },
+      { tags },
+      { HighlightStyle },
+    ] = await Promise.all([
+      import(`${CM_BASE}/@codemirror/view@6.36.5`),
+      import(`${CM_BASE}/@codemirror/state@6.5.2`),
+      import(`${CM_BASE}/@codemirror/commands@6.8.1`),
+      import(`${CM_BASE}/@codemirror/lang-python@6.1.9`),
+      import(`${CM_BASE}/@codemirror/language@6.11.0`),
+      import(`${CM_BASE}/@codemirror/autocomplete@6.18.6`),
+      import(`${CM_BASE}/@codemirror/lint@6.8.5`),
+      import(`${CM_BASE}/@lezer/highlight@1.2.1`),
+      import(`${CM_BASE}/@codemirror/language@6.11.0`),
+    ]);
 
-# List methods
-fruits.append("mango")
-fruits.remove("banana")
+    // ── Custom highlight style matching lesson snippet colors ─────────────────
+    const mindflexHighlight = HighlightStyle.define([
+      { tag: tags.keyword,            color: '#ff79c6' },
+      { tag: tags.controlKeyword,     color: '#ff79c6' },
+      { tag: tags.operatorKeyword,    color: '#ff79c6' },
+      { tag: tags.definitionKeyword,  color: '#ff79c6' },
+      { tag: tags.moduleKeyword,      color: '#ff79c6' },
+      { tag: tags.self,               color: '#ff79c6', fontStyle: 'italic' },
+      { tag: tags.bool,               color: '#bd93f9' },
+      { tag: tags.null,               color: '#bd93f9' },
+      { tag: tags.number,             color: '#bd93f9' },
+      { tag: tags.float,              color: '#bd93f9' },
+      { tag: tags.string,             color: '#f1fa8c' },
+      { tag: tags.regexp,             color: '#f1fa8c' },
+      { tag: tags.escape,             color: '#ff79c6' },
+      { tag: tags.special(tags.string), color: '#f1fa8c' },
+      { tag: tags.comment,            color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.lineComment,        color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.blockComment,       color: '#6272a4', fontStyle: 'italic' },
+      { tag: tags.function(tags.variableName), color: '#50fa7b' },
+      { tag: tags.function(tags.definition(tags.variableName)), color: '#50fa7b' },
+      { tag: tags.function(tags.propertyName), color: '#50fa7b' },
+      { tag: tags.definition(tags.variableName), color: '#e8eaf2' },
+      { tag: tags.definition(tags.propertyName), color: '#4f8cff' },
+      { tag: tags.className,          color: '#00e5a0' },
+      { tag: tags.definition(tags.className), color: '#00e5a0' },
+      { tag: tags.typeName,           color: '#00e5a0' },
+      { tag: tags.typeOperator,       color: '#ff79c6' },
+      { tag: tags.propertyName,       color: '#4f8cff' },
+      { tag: tags.variableName,       color: '#e8eaf2' },
+      { tag: tags.attributeName,      color: '#4f8cff' },
+      { tag: tags.namespace,          color: '#00e5a0' },
+      { tag: tags.decorator,          color: '#ff79c6' },
+      { tag: tags.operator,           color: '#ff79c6' },
+      { tag: tags.arithmeticOperator, color: '#ff79c6' },
+      { tag: tags.compareOperator,    color: '#ff79c6' },
+      { tag: tags.bitwiseOperator,    color: '#ff79c6' },
+      { tag: tags.logicOperator,      color: '#ff79c6' },
+      { tag: tags.punctuation,        color: '#7a7f96' },
+      { tag: tags.bracket,            color: '#7a7f96' },
+      { tag: tags.angleBracket,       color: '#7a7f96' },
+      { tag: tags.paren,              color: '#7a7f96' },
+      { tag: tags.squareBracket,      color: '#7a7f96' },
+      { tag: tags.brace,              color: '#7a7f96' },
+      { tag: tags.separator,          color: '#7a7f96' },
+      { tag: tags.special(tags.variableName), color: '#bd93f9' },
+      { tag: tags.labelName,          color: '#4f8cff' },
+      { tag: tags.invalid,            color: '#ff5e7e' },
+    ]);
 
-# Iterate over a list
-for fruit in fruits:
-    print(f"I like {fruit}")
+    // ── Python autocomplete completions ──────────────────────────────────────
+    const pyBuiltins = [
+      'print','len','range','type','int','float','str','bool','list','dict',
+      'tuple','set','input','open','enumerate','zip','map','filter','sorted',
+      'reversed','sum','min','max','abs','round','isinstance','issubclass',
+      'hasattr','getattr','setattr','delattr','repr','id','hash','iter','next',
+      'any','all','help','dir','vars','locals','globals','callable',
+      'staticmethod','classmethod','property','super',
+    ].map(label => ({ label, type: 'function', detail: 'builtin' }));
 
-# List comprehension (Pythonic!)
-upper = [f.upper() for f in fruits]
-print(upper)
-`,
-    functions: `# Module 3 · Functions & Scope
+    const pyKeywords = [
+      'and','as','assert','async','await','break','class','continue','def',
+      'del','elif','else','except','finally','for','from','global','if',
+      'import','in','is','lambda','nonlocal','not','or','pass','raise',
+      'return','try','while','with','yield','True','False','None','self',
+    ].map(label => ({ label, type: 'keyword' }));
 
-# Defining and calling a function
-def greet(name, greeting="Hello"):
-    return f"{greeting}, {name}!"
+    function pythonCompletions(context) {
+      const word = context.matchBefore(/\w*/);
+      if (!word || (word.from === word.to && !context.explicit)) return null;
+      // also grab any identifiers already typed in the document
+      const code = context.state.doc.toString();
+      const identifiers = [...new Set(code.match(/\b[a-zA-Z_]\w*/g) || [])];
+      const docWords = identifiers
+        .filter(w => w !== word.text && !pyKeywords.find(k=>k.label===w) && !pyBuiltins.find(b=>b.label===w))
+        .map(label => ({ label, type: 'variable' }));
+      return {
+        from: word.from,
+        options: [...pyKeywords, ...pyBuiltins, ...docWords],
+        validFor: /^\w*$/,
+      };
+    }
 
-print(greet("Alice"))
-print(greet("Bob", "Hey"))
+    // ── Snippets ──────────────────────────────────────────────────────────────
+    const SNIPPETS = {
+      lists: `# Module 4 · Lists in Python\n\n# Create a list of items\nfruits = ["apple", "banana", "cherry"]\n\n# Access elements by index (0-based)\nprint(fruits[0])   # → "apple"\nprint(fruits[-1])  # → "cherry"\n\n# List methods\nfruits.append("mango")\nfruits.remove("banana")\n\n# Iterate over a list\nfor fruit in fruits:\n    print(f"I like {fruit}")\n\n# List comprehension (Pythonic!)\nupper = [f.upper() for f in fruits]\nprint(upper)\n`,
+      functions: `# Module 3 · Functions & Scope\n\n# Defining and calling a function\ndef greet(name, greeting="Hello"):\n    return f"{greeting}, {name}!"\n\nprint(greet("Alice"))\nprint(greet("Bob", "Hey"))\n\n# *args and **kwargs\ndef total(*nums):\n    return sum(nums)\n\nprint(total(1, 2, 3, 4))  # → 10\n\n# Lambda expressions\nsquare = lambda x: x ** 2\nprint(square(7))  # → 49\n\n# Higher-order functions\nnumbers = [3, 1, 4, 1, 5, 9, 2, 6]\nevens = list(filter(lambda n: n % 2 == 0, numbers))\nprint(evens)\n`,
+      loops: `# Module 2 · Control Flow\n\nscore = 78\n\n# if / elif / else\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelse:\n    print("C or below")\n\n# for loop with range\nfor i in range(1, 6):\n    print(i, i ** 2)\n\n# while with break\nn = 0\nwhile True:\n    n += 1\n    if n == 5: break\n\nprint(f"Stopped at n={n}")\n\n# List iteration\ncolors = ["red", "green", "blue"]\nfor i, color in enumerate(colors):\n    print(f"{i}: {color}")\n`,
+      oop: `# Module 5 · Object-Oriented Python\n\nclass Animal:\n    def __init__(self, name, sound):\n        self.name = name\n        self.sound = sound\n\n    def speak(self):\n        return f"{self.name} says {self.sound}!"\n\n    def __repr__(self):\n        return f"Animal({self.name!r})"\n\nclass Dog(Animal):\n    def __init__(self, name):\n        super().__init__(name, "Woof")\n\n    def fetch(self):\n        return f"{self.name} fetches the ball!"\n\nrex = Dog("Rex")\nprint(rex.speak())\nprint(rex.fetch())\nprint(repr(rex))\nprint(isinstance(rex, Animal))  # True\n`,
+      fileio: `# Module 6 · File I/O & Exceptions\n\n# Handling exceptions gracefully\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f"Caught: {e}")\nfinally:\n    print("Finally block always runs.")\n\n# Multiple exception types\ndef safe_int(s):\n    try:\n        return int(s)\n    except ValueError:\n        return None\n\nprint(safe_int("42"))      # → 42\nprint(safe_int("hello"))   # → None\n\n# Custom exception\nclass NegativeError(ValueError):\n    pass\n\ndef sqrt_safe(x):\n    if x < 0:\n        raise NegativeError(f"Cannot sqrt negative: {x}")\n    return x ** 0.5\n\ntry:\n    print(sqrt_safe(16))\n    print(sqrt_safe(-1))\nexcept NegativeError as e:\n    print(f"Error: {e}")\n`,
+      hello: `# Hello, Python!\n\nname = "World"\nprint(f"Hello, {name}!")\n\n# Try some basics:\nfor i in range(1, 6):\n    print(f"  {i}: {'*' * i}")\n`,
+      blank: `# Python Sandbox\n# Write your code here!\n\n`,
+    };
 
-# *args and **kwargs
-def total(*nums):
-    return sum(nums)
+    // ── Tab manager ───────────────────────────────────────────────────────────
+    let tabs = [{ id: 1, name: 'main.py', code: SNIPPETS.lists }];
+    let activeTabId = 1;
+    let nextTabId = 2;
 
-print(total(1, 2, 3, 4))  # → 10
+    function renderTabs() {
+      const container = document.getElementById('fileTabs');
+      container.innerHTML = tabs.map(t => `
+        <div class="file-tab${t.id === activeTabId ? ' active' : ''}" data-id="${t.id}">
+          ${t.name}
+          ${tabs.length > 1 ? `<span style="margin-left:.4rem;color:var(--text-dimmer);font-size:.65rem;" data-close="${t.id}">×</span>` : ''}
+        </div>
+      `).join('');
+      container.querySelectorAll('.file-tab').forEach(el => {
+        el.addEventListener('click', e => {
+          if (e.target.dataset.close) closeTab(parseInt(e.target.dataset.close));
+          else switchTab(parseInt(el.dataset.id));
+        });
+      });
+    }
 
-# Lambda expressions
-square = lambda x: x ** 2
-print(square(7))  # → 49
+    function switchTab(id) {
+      const cur = tabs.find(t => t.id === activeTabId);
+      if (cur) cur.code = view.state.doc.toString();
+      activeTabId = id;
+      const tab = tabs.find(t => t.id === id);
+      if (tab) view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: tab.code } });
+      renderTabs();
+    }
 
-# Higher-order functions
-numbers = [3, 1, 4, 1, 5, 9, 2, 6]
-evens = list(filter(lambda n: n % 2 == 0, numbers))
-print(evens)
-`,
-    loops: `# Module 2 · Control Flow
+    function addTab() {
+      const tab = { id: nextTabId++, name: `file${tabs.length + 1}.py`, code: '# New file\n' };
+      tabs.push(tab);
+      switchTab(tab.id);
+    }
 
-score = 78
+    function closeTab(id) {
+      if (tabs.length <= 1) return;
+      tabs = tabs.filter(t => t.id !== id);
+      if (activeTabId === id) switchTab(tabs[0].id);
+      else renderTabs();
+    }
 
-# if / elif / else
-if score >= 90:
-    print("A")
-elif score >= 80:
-    print("B")
-else:
-    print("C or below")
+    // ── Build CodeMirror editor ───────────────────────────────────────────────
+    const startDoc = SNIPPETS.lists;
 
-# for loop with range
-for i in range(1, 6):
-    print(i, i ** 2)
+    const view = new EditorView({
+      state: EditorState.create({
+        doc: startDoc,
+        extensions: [
+          lineNumbers(),
+          highlightActiveLine(),
+          highlightActiveLineGutter(),
+          history(),
+          drawSelection(),
+          indentOnInput(),
+          bracketMatching(),
+          python(),
+          syntaxHighlighting(mindflexHighlight),
+          autocompletion({
+            override: [pythonCompletions],
+            activateOnTyping: true,
+            maxRenderedOptions: 12,
+          }),
+          keymap.of([
+            ...defaultKeymap,
+            ...historyKeymap,
+            ...completionKeymap,
+            indentWithTab,
+            { key: 'Ctrl-Enter', run: () => { runCode(); return true; } },
+            { key: 'Mod-Enter', run: () => { runCode(); return true; } },
+          ]),
+          EditorView.theme({
+            '&': { background: '#0d0f14', color: '#e8eaf2', height: '100%' },
+            '.cm-scroller': { overflow: 'auto', fontFamily: "'Space Mono', monospace", fontSize: '0.82rem', lineHeight: '1.9' },
+            '.cm-gutters': { background: '#0d0f14', borderRight: '1px solid #1f2330', color: '#3a3f56', display: 'flex', flexDirection: 'row' },
+            '.cm-lineNumbers': { display: 'flex', flexDirection: 'column', minWidth: '44px' },
+            '.cm-lineNumbers .cm-gutterElement': { display: 'block', width: '100%', padding: '0 10px 0 8px', textAlign: 'right', fontSize: '0.78rem', whiteSpace: 'nowrap' },
+            '.cm-activeLineGutter': { background: 'rgba(0,229,160,0.06)', color: '#00e5a0' },
+            '.cm-activeLine': { background: 'rgba(0,229,160,0.04)' },
+            '&.cm-focused .cm-cursor': { borderLeftColor: '#00e5a0' },
+            '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: 'rgba(0,229,160,0.18)' },
+            '.cm-tooltip.cm-tooltip-autocomplete': { background: '#181b22', border: '1px solid #1f2330', borderRadius: '6px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' },
+            '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { fontFamily: "'Space Mono', monospace", fontSize: '0.76rem', padding: '0.3rem 0.75rem', color: '#7a7f96' },
+            '.cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected]': { background: 'rgba(0,229,160,0.12)', color: '#e8eaf2' },
+            '.cm-completionDetail': { color: '#3a3f56', fontSize: '0.68rem' },
+          }),
+          EditorView.lineWrapping,
+        ],
+      }),
+      parent: document.getElementById('cmEditor'),
+    });
 
-# while with break
-n = 0
-while True:
-    n += 1
-    if n == 5: break
+    // ── Helper: get code from editor ──────────────────────────────────────────
+    function getCode() { return view.state.doc.toString(); }
+    function setCode(code) {
+      view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: code } });
+    }
 
-print(f"Stopped at n={n}")
+    // ── Snippet loader ────────────────────────────────────────────────────────
+    document.getElementById('snippetSelect').addEventListener('change', function() {
+      const val = this.value;
+      if (!val || !SNIPPETS[val]) { this.value = ''; return; }
+      setCode(SNIPPETS[val]);
+      this.value = '';
+    });
 
-# List iteration
-colors = ["red", "green", "blue"]
-for i, color in enumerate(colors):
-    print(f"{i}: {color}")
-`,
-    oop: `# Module 5 · Object-Oriented Python
+    document.getElementById('clearBtn').addEventListener('click', () => setCode(''));
+    document.getElementById('addTabBtn').addEventListener('click', addTab);
+    document.getElementById('outputClearBtn').addEventListener('click', () => {
+      document.getElementById('outputTerminal').innerHTML = '';
+    });
 
-class Animal:
-    def __init__(self, name, sound):
-        self.name = name
-        self.sound = sound
+    // ── Pyodide ───────────────────────────────────────────────────────────────
+    let pyodide = null;
+    let pyodideReady = false;
 
-    def speak(self):
-        return f"{self.name} says {self.sound}!"
+    async function loadPyodideRuntime() {
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+        document.head.appendChild(script);
+        await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
+        pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' });
+        pyodideReady = true;
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      } catch(e) {
+        const el = document.getElementById('loadingOverlay');
+        el.querySelector('.loading-spinner').style.display = 'none';
+        el.childNodes[1].textContent = ' Python runtime unavailable — using basic mode';
+        setTimeout(() => el.classList.add('hidden'), 3000);
+      }
+    }
+    loadPyodideRuntime();
 
-    def __repr__(self):
-        return f"Animal({self.name!r})"
+    function setDot(state) {
+      const dot = document.getElementById('outputDot');
+      dot.className = 'output-dot' + (state ? ' ' + state : '');
+    }
 
-class Dog(Animal):
-    def __init__(self, name):
-        super().__init__(name, "Woof")
+    function appendOutput(text, cls) {
+      const terminal = document.getElementById('outputTerminal');
+      (text || '').split('\n').forEach((line, i, arr) => {
+        if (i === arr.length - 1 && line === '') return;
+        const span = document.createElement('span');
+        span.className = cls;
+        span.textContent = line;
+        terminal.appendChild(span);
+      });
+      terminal.scrollTop = terminal.scrollHeight;
+    }
 
-    def fetch(self):
-        return f"{self.name} fetches the ball!"
+    async function runCode() {
+      const cur = tabs.find(t => t.id === activeTabId);
+      if (cur) cur.code = getCode();
+      const code = getCode();
+      const terminal = document.getElementById('outputTerminal');
+      terminal.innerHTML = '';
+      setDot('running');
+      appendOutput('$ python ' + (cur?.name || 'main.py'), 'prompt-line');
 
-rex = Dog("Rex")
-print(rex.speak())
-print(rex.fetch())
-print(repr(rex))
-print(isinstance(rex, Animal))  # True
-`,
-    fileio: `# Module 6 · File I/O & Exceptions
-# (File operations simulated — no real files in sandbox)
+      if (pyodideReady && pyodide) {
+        try {
+          let stdout = '', stderr = '';
+          pyodide.setStdout({ batched: s => { stdout += s + '\n'; } });
+          pyodide.setStderr({ batched: s => { stderr += s + '\n'; } });
+          await pyodide.runPythonAsync(code);
+          if (stdout) appendOutput(stdout, 'out-line');
+          if (stderr) appendOutput(stderr, 'err-line');
+          if (!stdout && !stderr) appendOutput('(no output)', 'info-line');
+          appendOutput('Process finished with exit code 0', 'ok-line');
+          setDot('ok');
+        } catch(e) {
+          appendOutput(String(e), 'err-line');
+          setDot('err');
+        }
+      } else {
+        try {
+          const lines = [];
+          const fakePrint = (...args) => lines.push(args.map(a => {
+            if (Array.isArray(a)) return '[' + a.map(x => typeof x === 'string' ? `'${x}'` : String(x)).join(', ') + ']';
+            return String(a);
+          }).join(' '));
+          const fn = new Function('print', code.replace(/print\s*\(/g, 'print('));
+          fn(fakePrint);
+          lines.forEach(l => appendOutput(l, 'out-line'));
+          if (!lines.length) appendOutput('(no output)', 'info-line');
+          appendOutput('Process finished with exit code 0', 'ok-line');
+          setDot('ok');
+        } catch(e) {
+          appendOutput(String(e), 'err-line');
+          setDot('err');
+        }
+      }
+    }
 
-# Handling exceptions gracefully
-try:
-    result = 10 / 0
-except ZeroDivisionError as e:
-    print(f"Caught: {e}")
-finally:
-    print("Finally block always runs.")
+    document.getElementById('runBtn').addEventListener('click', runCode);
 
-# Multiple exception types
-def safe_int(s):
-    try:
-        return int(s)
-    except ValueError:
-        return None
+    // ── Cheatsheet ────────────────────────────────────────────────────────────
+    const CHEAT = [
+      { code: 'print(x)', desc: 'output x to console' },
+      { code: 'type(x)', desc: 'get type of x' },
+      { code: 'len(x)', desc: 'length of string/list' },
+      { code: 'range(n)', desc: 'numbers 0 to n-1' },
+      { code: 'int/float/str(x)', desc: 'type conversion' },
+      { code: 'input("prompt")', desc: 'read user input (str)' },
+      { code: 'f"{var}"', desc: 'f-string formatting' },
+      { code: '[x for x in y]', desc: 'list comprehension' },
+      { code: 'x if cond else y', desc: 'ternary expression' },
+      { code: '.append(x)', desc: 'add item to list' },
+      { code: '.split(sep)', desc: 'split string' },
+      { code: '.join(lst)', desc: 'join list to string' },
+      { code: 'sorted(x)', desc: 'return sorted list' },
+      { code: 'enumerate(x)', desc: 'index+value pairs' },
+      { code: 'zip(a,b)', desc: 'pair two iterables' },
+      { code: 'dict.get(k,d)', desc: 'safe dict lookup' },
+      { code: 'import module', desc: 'import a module' },
+    ];
 
-print(safe_int("42"))      # → 42
-print(safe_int("hello"))   # → None
-
-# Custom exception
-class NegativeError(ValueError):
-    pass
-
-def sqrt_safe(x):
-    if x < 0:
-        raise NegativeError(f"Cannot sqrt negative: {x}")
-    return x ** 0.5
-
-try:
-    print(sqrt_safe(16))
-    print(sqrt_safe(-1))
-except NegativeError as e:
-    print(f"Error: {e}")
-`,
-    hello: `# Hello, Python!
-
-name = "World"
-print(f"Hello, {name}!")
-
-# Try some basics:
-for i in range(1, 6):
-    print(f"  {i}: {'*' * i}")
-`,
-    blank: `# Python Sandbox\n# Write your code here!\n\n`
-  };
-
-  // ─── Tab manager ──────────────────────────────────────────────────────────
-  let tabs = [{ id: 1, name: 'main.py', code: SNIPPETS.lists }];
-  let activeTabId = 1;
-  let nextTabId = 2;
-
-  function renderTabs() {
-    const container = document.getElementById('fileTabs');
-    container.innerHTML = tabs.map(t => `
-      <div class="file-tab${t.id === activeTabId ? ' active' : ''}" data-id="${t.id}">
-        ${t.name}
-        ${tabs.length > 1 ? `<span style="margin-left:.4rem;color:var(--text-dimmer);font-size:.65rem;" data-close="${t.id}">×</span>` : ''}
+    const cheatEl = document.getElementById('cheatItems');
+    cheatEl.innerHTML = CHEAT.map(c => `
+      <div class="cheat-item" data-insert="${c.code}">
+        <span class="cheat-code">${c.code}</span>
+        <span class="cheat-desc">${c.desc}</span>
       </div>
     `).join('');
-    container.querySelectorAll('.file-tab').forEach(el => {
-      el.addEventListener('click', (e) => {
-        if (e.target.dataset.close) {
-          closeTab(parseInt(e.target.dataset.close));
-        } else {
-          switchTab(parseInt(el.dataset.id));
-        }
+
+    cheatEl.querySelectorAll('.cheat-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const insert = el.dataset.insert;
+        const pos = view.state.selection.main.head;
+        view.dispatch({
+          changes: { from: pos, insert },
+          selection: { anchor: pos + insert.length },
+        });
+        view.focus();
       });
     });
-  }
 
-  function switchTab(id) {
-    // Save current
-    const cur = tabs.find(t => t.id === activeTabId);
-    if (cur) cur.code = document.getElementById('codeEditor').value;
-    activeTabId = id;
-    const tab = tabs.find(t => t.id === id);
-    if (tab) document.getElementById('codeEditor').value = tab.code;
+    // ── Init ──────────────────────────────────────────────────────────────────
     renderTabs();
-    updateLineNumbers();
-  }
-
-  function addTab() {
-    const tab = { id: nextTabId++, name: `file${tabs.length + 1}.py`, code: '# New file\n' };
-    tabs.push(tab);
-    switchTab(tab.id);
-  }
-
-  function closeTab(id) {
-    if (tabs.length <= 1) return;
-    tabs = tabs.filter(t => t.id !== id);
-    if (activeTabId === id) switchTab(tabs[0].id);
-    else renderTabs();
-  }
-
-  // ─── Line numbers ─────────────────────────────────────────────────────────
-  function updateLineNumbers() {
-    const editor = document.getElementById('codeEditor');
-    const lines = editor.value.split('\n').length;
-    document.getElementById('lineNumbers').textContent = Array.from({length: lines}, (_,i) => i+1).join('\n');
-  }
-
-  document.getElementById('codeEditor').addEventListener('input', updateLineNumbers);
-  document.getElementById('codeEditor').addEventListener('scroll', function() {
-    document.getElementById('lineNumbers').scrollTop = this.scrollTop;
-  });
-
-  // ─── Tab key ──────────────────────────────────────────────────────────────
-  document.getElementById('codeEditor').addEventListener('keydown', function(e) {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = this.selectionStart;
-      const end = this.selectionEnd;
-      this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-      this.selectionStart = this.selectionEnd = start + 4;
-      updateLineNumbers();
-    }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      runCode();
-    }
-  });
-
-  // ─── Snippet loader ───────────────────────────────────────────────────────
-  document.getElementById('snippetSelect').addEventListener('change', function() {
-    const val = this.value;
-    if (!val || !SNIPPETS[val]) { this.value = ''; return; }
-    document.getElementById('codeEditor').value = SNIPPETS[val];
-    updateLineNumbers();
-    this.value = '';
-  });
-
-  document.getElementById('clearBtn').addEventListener('click', () => {
-    document.getElementById('codeEditor').value = '';
-    updateLineNumbers();
-  });
-
-  document.getElementById('addTabBtn').addEventListener('click', addTab);
-  document.getElementById('outputClearBtn').addEventListener('click', () => {
-    document.getElementById('outputTerminal').innerHTML = '';
-  });
-
-  // ─── Pyodide ──────────────────────────────────────────────────────────────
-  let pyodide = null;
-  let pyodideReady = false;
-
-  async function loadPyodide() {
-    try {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
-      document.head.appendChild(script);
-      await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
-      pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' });
-      pyodideReady = true;
-      document.getElementById('loadingOverlay').classList.add('hidden');
-    } catch(e) {
-      document.getElementById('loadingOverlay').textContent = 'Python runtime unavailable — using basic mode';
-      setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 3000);
-    }
-  }
-  loadPyodide();
-
-  function setDot(state) {
-    const dot = document.getElementById('outputDot');
-    dot.className = 'output-dot' + (state ? ' ' + state : '');
-  }
-
-  function appendOutput(text, cls) {
-    const terminal = document.getElementById('outputTerminal');
-    const lines = (text || '').split('\n');
-    lines.forEach((line, i) => {
-      if (i === lines.length - 1 && line === '') return;
-      const span = document.createElement('span');
-      span.className = cls;
-      span.textContent = line;
-      terminal.appendChild(span);
-    });
-    terminal.scrollTop = terminal.scrollHeight;
-  }
-
-  async function runCode() {
-    // Save current tab content
-    const cur = tabs.find(t => t.id === activeTabId);
-    if (cur) cur.code = document.getElementById('codeEditor').value;
-
-    const code = document.getElementById('codeEditor').value;
-    const terminal = document.getElementById('outputTerminal');
-    terminal.innerHTML = '';
-    setDot('running');
-
-    appendOutput('$ python ' + (cur?.name || 'main.py'), 'prompt-line');
-
-    if (pyodideReady && pyodide) {
-      try {
-        let stdout = '';
-        let stderr = '';
-        pyodide.setStdout({ batched: (s) => { stdout += s + '\n'; } });
-        pyodide.setStderr({ batched: (s) => { stderr += s + '\n'; } });
-        await pyodide.runPythonAsync(code);
-        if (stdout) appendOutput(stdout, 'out-line');
-        if (stderr) appendOutput(stderr, 'err-line');
-        if (!stdout && !stderr) appendOutput('(no output)', 'info-line');
-        appendOutput('', 'ok-line');
-        appendOutput('Process finished with exit code 0', 'ok-line');
-        setDot('ok');
-      } catch(e) {
-        appendOutput(String(e), 'err-line');
-        setDot('err');
-      }
-    } else {
-      // Basic fallback
-      try {
-        const lines = [];
-        const fakePrint = (...args) => lines.push(args.map(a => {
-          if (Array.isArray(a)) return '[' + a.map(x => typeof x === 'string' ? `'${x}'` : String(x)).join(', ') + ']';
-          return String(a);
-        }).join(' '));
-        const fn = new Function('print', code.replace(/print\s*\(/g, 'print('));
-        fn(fakePrint);
-        lines.forEach(l => appendOutput(l, 'out-line'));
-        if (!lines.length) appendOutput('(no output)', 'info-line');
-        appendOutput('Process finished with exit code 0', 'ok-line');
-        setDot('ok');
-      } catch(e) {
-        appendOutput(String(e), 'err-line');
-        setDot('err');
-      }
-    }
-  }
-
-  document.getElementById('runBtn').addEventListener('click', runCode);
-
-  // ─── Cheatsheet ───────────────────────────────────────────────────────────
-  const CHEAT = [
-    { code: 'print(x)', desc: 'output x to console' },
-    { code: 'type(x)', desc: 'get type of x' },
-    { code: 'len(x)', desc: 'length of string/list' },
-    { code: 'range(n)', desc: 'numbers 0 to n-1' },
-    { code: 'int/float/str(x)', desc: 'type conversion' },
-    { code: 'input("prompt")', desc: 'read user input (str)' },
-    { code: 'f"{var}"', desc: 'f-string formatting' },
-    { code: '[x for x in y]', desc: 'list comprehension' },
-    { code: 'x if cond else y', desc: 'ternary expression' },
-    { code: '.append(x)', desc: 'add item to list' },
-    { code: '.split(sep)', desc: 'split string' },
-    { code: '.join(lst)', desc: 'join list to string' },
-    { code: 'sorted(x)', desc: 'return sorted list' },
-    { code: 'enumerate(x)', desc: 'index+value pairs' },
-    { code: 'zip(a,b)', desc: 'pair two iterables' },
-    { code: 'dict.get(k,d)', desc: 'safe dict lookup' },
-    { code: 'import module', desc: 'import a module' },
-  ];
-
-  const cheatEl = document.getElementById('cheatItems');
-  cheatEl.innerHTML = CHEAT.map(c => `
-    <div class="cheat-item" data-insert="${c.code}">
-      <span class="cheat-code">${c.code}</span>
-      <span class="cheat-desc">${c.desc}</span>
-    </div>
-  `).join('');
-
-  cheatEl.querySelectorAll('.cheat-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const editor = document.getElementById('codeEditor');
-      const pos = editor.selectionStart;
-      const insert = el.dataset.insert;
-      editor.value = editor.value.substring(0, pos) + insert + editor.value.substring(pos);
-      editor.selectionStart = editor.selectionEnd = pos + insert.length;
-      editor.focus();
-      updateLineNumbers();
-    });
-  });
-
-  // ─── Init ─────────────────────────────────────────────────────────────────
-  renderTabs();
-  document.getElementById('codeEditor').value = tabs[0].code;
-  updateLineNumbers();
   </script>
 </body>
 </html>
