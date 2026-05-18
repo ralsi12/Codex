@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mindflex — Lesson</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mindflex â€” Welcome to Python</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <style>
     :root {
       --bg: #0a0c10;
@@ -106,7 +106,7 @@
     }
     .nav-btn.primary:hover { box-shadow: 0 0 16px rgba(0,229,160,.4); }
 
-    /* MAIN LAYOUT — split pane */
+    /* MAIN LAYOUT â€” split pane */
     .lesson-layout {
       position: relative;
       z-index: 1;
@@ -116,7 +116,7 @@
       padding-top: 64px;
     }
 
-    /* LEFT PANEL — lesson content */
+    /* LEFT PANEL â€” lesson content */
     .lesson-panel {
       border-right: 1px solid var(--border);
       display: flex;
@@ -345,7 +345,7 @@
       color: var(--text-dim);
     }
 
-    /* RIGHT PANEL — IDE */
+    /* RIGHT PANEL â€” IDE */
     .ide-panel {
       display: flex;
       flex-direction: column;
@@ -445,7 +445,7 @@
     }
     .cm-content { padding: .8rem 0 !important; caret-color: var(--accent) !important; }
     .cm-line { padding: 0 1.25rem 0 0 !important; }
-    /* Gutter / line numbers — vertically stacked */
+    /* Gutter / line numbers â€” vertically stacked */
     .cm-gutters {
       background: #0d0f14 !important;
       border-right: 1px solid var(--border) !important;
@@ -475,7 +475,7 @@
     .cm-activeLine { background: rgba(0,229,160,.04) !important; }
     .cm-selectionBackground { background: rgba(0,229,160,.18) !important; }
     .cm-cursor { border-left-color: var(--accent) !important; border-left-width: 2px !important; }
-    /* Syntax colours — match lesson snippet palette exactly */
+    /* Syntax colours â€” match lesson snippet palette exactly */
     .cm-keyword   { color: #ff79c6 !important; }
     .cm-string, .cm-string2 { color: #f1fa8c !important; }
     .cm-comment   { color: #6272a4 !important; font-style: italic; }
@@ -489,6 +489,22 @@
     .cm-meta      { color: #ff79c6 !important; }
     .cm-punctuation { color: #7a7f96 !important; }
     .cm-matchingBracket { background: rgba(0,229,160,.15) !important; color: var(--accent) !important; border-radius: 2px; }
+    .CodeMirror {
+      flex: 1;
+      height: 100%;
+      background: #0d0f14;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+    }
+    .CodeMirror-scroll { height: 100%; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+    .CodeMirror-gutters { background: #0d0f14; border-right: 1px solid var(--border); }
+    .CodeMirror-linenumber { color: var(--text-dimmer); font-family: var(--mono); font-size: .75rem; padding: 0 10px 0 8px; }
+    .CodeMirror-cursor { border-left-color: var(--accent); border-left-width: 2px; }
+    .CodeMirror-selected { background: rgba(0,229,160,.18) !important; }
+    .CodeMirror-activeline-background { background: rgba(0,229,160,.04); }
+    .CodeMirror-matchingbracket { background: rgba(0,229,160,.15); color: var(--accent) !important; border-radius: 2px; }
     /* Autocomplete popup */
     .cm-tooltip { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; box-shadow: 0 8px 32px rgba(0,0,0,.5) !important; }
     .cm-tooltip.cm-tooltip-autocomplete > ul { font-family: var(--mono) !important; font-size: .76rem !important; max-height: 200px !important; }
@@ -592,7 +608,7 @@
       .nav-breadcrumb { display: none; }
     }
   </style>
-</head>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script></head>
 <body>
 
   <nav>
@@ -600,13 +616,13 @@
     <div class="nav-breadcrumb" id="navBreadcrumb">
       <a href="index.html">curriculum</a>
       <span class="sep">/</span>
-      <a href="#" id="breadModuleLink">module_01</a>
+      <a href="lesson-preview.html?module=1" id="breadModuleLink">module_01</a>
       <span class="sep">/</span>
-      <span id="breadLessonName">lesson</span>
+      <span id="breadLessonName">Welcome to Python</span>
     </div>
     <div class="nav-actions">
       <a href="sandbox.html" class="nav-btn">Open Sandbox</a>
-      <a href="#" id="backToModule" class="nav-btn">← Module</a>
+      <a href="lesson-preview.html?module=1" id="backToModule" class="nav-btn">â† Module</a>
     </div>
   </nav>
 
@@ -615,16 +631,60 @@
     <div class="lesson-panel">
       <div class="lesson-nav-bar">
         <div class="lesson-nav-info" id="lessonNavInfo">Lesson 1 of 8</div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:12%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 13%;"></div></div>
         <div class="lesson-nav-controls">
-          <a href="#" class="lesson-prev" id="prevBtn">← Prev</a>
-          <a href="#" class="lesson-next active" id="nextBtn">Next →</a>
+          <a href="lesson-preview.html?module=1" class="lesson-prev" id="prevBtn">â† Module</a>
+          <a href="lesson.html?module=1&amp;lesson=2" class="lesson-next active" id="nextBtn">Next â†’</a>
         </div>
       </div>
 
       <div class="lesson-content" id="lessonContent">
-        <!-- injected by JS -->
-      </div>
+            <span class="lesson-type-badge reading">reading</span>
+            <h1 class="lesson-title">Welcome to Python</h1>
+            <p class="lesson-subtitle">Understand what Python is, why it matters, and get your first program running in the editor.</p>
+            <div class="lesson-body">
+              <h3>What is Python?</h3>
+              <p>Python is a high-level, general-purpose programming language created by Guido van Rossum in 1991. It's designed to be readable and expressive â€” Python code often reads almost like plain English.</p>
+              <p>It's used everywhere: web backends (Instagram, Pinterest), data science (pandas, numpy), AI/ML (TensorFlow, PyTorch), automation scripts, APIs, and more.</p>
+
+              <h3>Why learn Python first?</h3>
+              <ul>
+                <li>Clean, minimal syntax â€” less noise, more logic</li>
+                <li>Massive ecosystem of libraries for almost anything</li>
+                <li>Huge demand in the job market</li>
+                <li>Works for scripting, web, data, AI, and system automation</li>
+              </ul>
+
+              <h3>Your first Python program</h3>
+              <p>Every programmer's first program is printing "Hello, World!" â€” it's tradition. In Python, it's just one line:</p>
+
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">hello.py</span></div>
+                <pre><span class="fn">print</span>(<span class="st">"Hello, World!"</span>)</pre>
+              </div>
+
+              <p>The <code>print()</code> function outputs text to the console. The text <code>"Hello, World!"</code> is a <strong>string</strong> â€” text wrapped in quotes.</p>
+
+              <div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Python uses <code>print()</code> to show output. Everything inside the parentheses gets displayed. You can print numbers, text, variables â€” almost anything.</p></div>
+
+              <h3>Comments</h3>
+              <p>Comments start with <code>#</code> and are ignored by Python. Use them to explain your code:</p>
+
+              <div class="code-snippet">
+                <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">comments.py</span></div>
+                <pre><span class="cm"># This is a comment â€” Python ignores it</span>
+<span class="fn">print</span>(<span class="st">"This line runs"</span>)  <span class="cm"># inline comment</span></pre>
+              </div>
+
+              <div class="try-it-prompt">
+                <div class="icon">âš¡</div>
+                <div>
+                  <div class="label">Try it yourself</div>
+                  <div class="desc">The editor on the right has starter code. Press <strong>Run</strong> to execute it, then try changing the message inside the quotes.</div>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
 
     <!-- RIGHT: interactive IDE -->
@@ -636,12 +696,12 @@
             <div class="ide-dot ide-dot-y"></div>
             <div class="ide-dot ide-dot-g"></div>
           </div>
-          <span class="ide-file" id="ideFilename">lesson.py</span>
+          <span class="ide-file" id="ideFilename">fundamentals.py</span>
         </div>
         <div class="ide-actions">
-          <button class="ide-reset-btn" id="resetBtn">↺ Reset</button>
+          <button class="ide-reset-btn" id="resetBtn">â†º Reset</button>
           <button class="run-btn" id="runBtn">
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"/></svg>
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"></path></svg>
             Run
           </button>
         </div>
@@ -653,21 +713,23 @@
 
       <div class="output-divider">
         <span class="output-label">Output</span>
-        <span class="output-status" id="outputStatus">ready</span>
+        <span class="output-status ok" id="outputStatus">ready</span>
       </div>
-      <div class="output-terminal" id="outputTerminal">
-        <span class="info-line"># Press Run to execute your code</span>
-      </div>
+      <div class="output-terminal" id="outputTerminal"><span class="info-line"># Press Run to execute your code</span></div>
 
       <div class="lesson-complete-bar" id="completeBanner">
-        <div class="complete-msg">✓ Great work! Lesson complete.</div>
-        <a href="#" class="next-lesson-btn" id="completeBannerNext">Next Lesson →</a>
+        <div class="complete-msg">âœ“ Great work! Lesson complete.</div>
+        <a href="lesson.html?module=1&amp;lesson=2" class="next-lesson-btn" id="completeBannerNext">Next Lesson â†’</a>
       </div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <script>
-  // ─── Lesson data (same modules structure as lesson-preview.js) ──────────────
+  // â”€â”€â”€ Lesson data (same modules structure as lesson-preview.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const LESSONS = {
     1: {
       title: "Python Fundamentals",
@@ -683,40 +745,40 @@
             <p class="lesson-subtitle">Understand what Python is, why it matters, and get your first program running in the editor.</p>
             <div class="lesson-body">
               <h3>What is Python?</h3>
-              <p>Python is a high-level, general-purpose programming language created by Guido van Rossum in 1991. It's designed to be readable and expressive — Python code often reads almost like plain English.</p>
+              <p>Python is a high-level, general-purpose programming language created by Guido van Rossum in 1991. It's designed to be readable and expressive â€” Python code often reads almost like plain English.</p>
               <p>It's used everywhere: web backends (Instagram, Pinterest), data science (pandas, numpy), AI/ML (TensorFlow, PyTorch), automation scripts, APIs, and more.</p>
 
               <h3>Why learn Python first?</h3>
               <ul>
-                <li>Clean, minimal syntax — less noise, more logic</li>
+                <li>Clean, minimal syntax â€” less noise, more logic</li>
                 <li>Massive ecosystem of libraries for almost anything</li>
                 <li>Huge demand in the job market</li>
                 <li>Works for scripting, web, data, AI, and system automation</li>
               </ul>
 
               <h3>Your first Python program</h3>
-              <p>Every programmer's first program is printing "Hello, World!" — it's tradition. In Python, it's just one line:</p>
+              <p>Every programmer's first program is printing "Hello, World!" â€” it's tradition. In Python, it's just one line:</p>
 
               <div class="code-snippet">
                 <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">hello.py</span></div>
                 <pre><span class="fn">print</span>(<span class="st">"Hello, World!"</span>)</pre>
               </div>
 
-              <p>The <code>print()</code> function outputs text to the console. The text <code>"Hello, World!"</code> is a <strong>string</strong> — text wrapped in quotes.</p>
+              <p>The <code>print()</code> function outputs text to the console. The text <code>"Hello, World!"</code> is a <strong>string</strong> â€” text wrapped in quotes.</p>
 
-              <div class="tip-box"><strong>💡 TIP</strong><p>Python uses <code>print()</code> to show output. Everything inside the parentheses gets displayed. You can print numbers, text, variables — almost anything.</p></div>
+              <div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Python uses <code>print()</code> to show output. Everything inside the parentheses gets displayed. You can print numbers, text, variables â€” almost anything.</p></div>
 
               <h3>Comments</h3>
               <p>Comments start with <code>#</code> and are ignored by Python. Use them to explain your code:</p>
 
               <div class="code-snippet">
                 <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">comments.py</span></div>
-                <pre><span class="cm"># This is a comment — Python ignores it</span>
+                <pre><span class="cm"># This is a comment â€” Python ignores it</span>
 <span class="fn">print</span>(<span class="st">"This line runs"</span>)  <span class="cm"># inline comment</span></pre>
               </div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">The editor on the right has starter code. Press <strong>Run</strong> to execute it, then try changing the message inside the quotes.</div>
@@ -756,7 +818,7 @@ print("My name is ___")
               <ul>
                 <li>Use letters, digits, and underscores</li>
                 <li>Cannot start with a digit</li>
-                <li>Case-sensitive: <code>Name</code> ≠ <code>name</code></li>
+                <li>Case-sensitive: <code>Name</code> â‰  <code>name</code></li>
                 <li>Convention: use <code>snake_case</code> for variable names</li>
               </ul>
 
@@ -770,10 +832,10 @@ print("My name is ___")
 <span class="fn">print</span>(<span class="nm">score</span>)   <span class="cm"># 100</span></pre>
               </div>
 
-              <div class="tip-box"><strong>💡 TIP</strong><p>Python is dynamically typed — a variable can hold any type, and the type can change when you reassign it.</p></div>
+              <div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Python is dynamically typed â€” a variable can hold any type, and the type can change when you reassign it.</p></div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">Create variables for your name, age, and a favorite number. Print them all with one <code>print()</code> call.</div>
@@ -799,7 +861,7 @@ print("Updated age:", age)
         {
           name: "Numeric Types",
           type: "reading",
-          sub: "int, float, complex — and arithmetic operators",
+          sub: "int, float, complex â€” and arithmetic operators",
           content: `
             <span class="lesson-type-badge reading">reading</span>
             <h1 class="lesson-title">Numeric Types</h1>
@@ -829,10 +891,10 @@ print("Updated age:", age)
 <span class="fn">print</span>(<span class="num">2</span> <span class="op">**</span> <span class="num">8</span>)   <span class="cm"># 256</span></pre>
               </div>
 
-              <div class="warn-box"><strong>⚠️ NOTE</strong><p>Division <code>/</code> always returns a float in Python 3. Use <code>//</code> if you need an integer result.</p></div>
+              <div class="warn-box"><strong>âš ï¸ NOTE</strong><p>Division <code>/</code> always returns a float in Python 3. Use <code>//</code> if you need an integer result.</p></div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">Write a program that calculates how many weeks and remaining days are in 100 days using <code>//</code> and <code>%</code>.</div>
@@ -846,8 +908,8 @@ print("Updated age:", age)
 print(10 + 3)    # addition
 print(10 - 3)    # subtraction
 print(10 * 3)    # multiplication
-print(10 / 3)    # division → float
-print(10 // 3)   # floor division → int
+print(10 / 3)    # division â†’ float
+print(10 // 3)   # floor division â†’ int
 print(10 % 3)    # modulo (remainder)
 print(2 ** 8)    # exponentiation
 
@@ -898,7 +960,7 @@ string"""</span></pre>
               </div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">Write your name as a string variable and print it reversed using slicing. Then use an f-string to print "Hi, [name]! You have [length] letters."</div>
@@ -966,7 +1028,7 @@ print(len(word))    # length
               </div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">Set a variable <code>age = 20</code> and check: is age between 18 and 65? Print the result.</div>
@@ -1008,10 +1070,10 @@ print(bool("hi"))   # True
               <p>Use <code>int()</code>, <code>float()</code>, <code>str()</code>, <code>bool()</code> to convert between types:</p>
               <div class="code-snippet">
                 <div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">conversion.py</span></div>
-                <pre><span class="fn">int</span>(<span class="st">"42"</span>)      <span class="cm"># → 42</span>
-<span class="fn">float</span>(<span class="st">"3.14"</span>)  <span class="cm"># → 3.14</span>
-<span class="fn">str</span>(<span class="num">100</span>)       <span class="cm"># → "100"</span>
-<span class="fn">int</span>(<span class="num">3.9</span>)       <span class="cm"># → 3 (truncates!)</span></pre>
+                <pre><span class="fn">int</span>(<span class="st">"42"</span>)      <span class="cm"># â†’ 42</span>
+<span class="fn">float</span>(<span class="st">"3.14"</span>)  <span class="cm"># â†’ 3.14</span>
+<span class="fn">str</span>(<span class="num">100</span>)       <span class="cm"># â†’ "100"</span>
+<span class="fn">int</span>(<span class="num">3.9</span>)       <span class="cm"># â†’ 3 (truncates!)</span></pre>
               </div>
 
               <h3>User input always returns a string</h3>
@@ -1023,10 +1085,10 @@ print(bool("hi"))   # True
 <span class="fn">print</span>(<span class="nm">age</span> <span class="op">+</span> <span class="num">1</span>)   <span class="cm"># 26</span></pre>
               </div>
 
-              <div class="warn-box"><strong>⚠️ NOTE</strong><p><code>int("hello")</code> raises a <code>ValueError</code>. Only convert strings that actually contain valid numbers.</p></div>
+              <div class="warn-box"><strong>âš ï¸ NOTE</strong><p><code>int("hello")</code> raises a <code>ValueError</code>. Only convert strings that actually contain valid numbers.</p></div>
 
               <div class="try-it-prompt">
-                <div class="icon">⚡</div>
+                <div class="icon">âš¡</div>
                 <div>
                   <div class="label">Try it yourself</div>
                   <div class="desc">Convert the string <code>"1995"</code> to an int, compute how old that makes someone in 2025, and print using an f-string.</div>
@@ -1037,16 +1099,16 @@ print(bool("hi"))   # True
           starterCode: `# Type Conversion
 
 # int() - convert to integer
-print(int("42"))      # string → int
-print(int(3.9))       # float → int (truncates)
+print(int("42"))      # string â†’ int
+print(int(3.9))       # float â†’ int (truncates)
 
 # float() - convert to float
-print(float("3.14"))  # string → float
-print(float(10))      # int → float
+print(float("3.14"))  # string â†’ float
+print(float(10))      # int â†’ float
 
 # str() - convert to string
-print(str(100))       # int → string
-print(str(3.14))      # float → string
+print(str(100))       # int â†’ string
+print(str(3.14))      # float â†’ string
 
 # Practical example: year calculation
 birth_year = "1995"
@@ -1077,7 +1139,7 @@ print(f"Born in {birth_year}: {age} years old in 2025")
 
               <p>Format each result using an f-string like: <code>16 + 4 = 20</code></p>
 
-              <div class="tip-box"><strong>💡 TIP</strong><p>Use f-strings for clean output: <code>f"{a} + {b} = {a + b}"</code></p></div>
+              <div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Use f-strings for clean output: <code>f"{a} + {b} = {a + b}"</code></p></div>
 
               <h3>Expected output</h3>
               <div class="code-snippet">
@@ -1092,7 +1154,7 @@ print(f"Born in {birth_year}: {age} years old in 2025")
               </div>
 
               <div class="try-it-prompt">
-                <div class="icon">🎯</div>
+                <div class="icon">ðŸŽ¯</div>
                 <div>
                   <div class="label">Your task</div>
                   <div class="desc">Fill in the code on the right to produce the expected output. Try to do it without peeking at the solution!</div>
@@ -1143,10 +1205,10 @@ Coder: True
 Type check: &lt;class 'str'&gt;</pre>
               </div>
 
-              <div class="tip-box"><strong>💡 TIP</strong><p>Round inches to 1 decimal: <code>f"{inches:.1f}"</code></p></div>
+              <div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Round inches to 1 decimal: <code>f"{inches:.1f}"</code></p></div>
 
               <div class="try-it-prompt">
-                <div class="icon">🏆</div>
+                <div class="icon">ðŸ†</div>
                 <div>
                   <div class="label">Challenge</div>
                   <div class="desc">Write the complete program. Use your own data. Make the output look exactly like the format above.</div>
@@ -1182,13 +1244,13 @@ print(f"Type check: {type(name)}")
       title: "Control Flow",
       filename: "module_02/control_flow.py",
       lessons: [
-        { name: "if / elif / else", type: "reading", sub: "Branching logic", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">if / elif / else</h1><p class="lesson-subtitle">Control which code runs based on conditions.</p><div class="lesson-body"><h3>Basic if statement</h3><p>Python executes the block if the condition is True:</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">if_basic.py</span></div><pre><span class="nm">score</span> <span class="op">=</span> <span class="num">78</span>\n<span class="kw">if</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">90</span>:\n    <span class="fn">print</span>(<span class="st">"A"</span>)\n<span class="kw">elif</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">80</span>:\n    <span class="fn">print</span>(<span class="st">"B"</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="st">"C or below"</span>)</pre></div><div class="tip-box"><strong>💡 TIP</strong><p>Indentation matters in Python — 4 spaces define the block. Never mix tabs and spaces.</p></div><div class="try-it-prompt"><div class="icon">⚡</div><div><div class="label">Try it yourself</div><div class="desc">Change the score value and observe how the output changes.</div></div></div></div>`, starterCode: `# if / elif / else\nscore = 78\n\nif score >= 90:\n    print("Grade: A")\nelif score >= 80:\n    print("Grade: B")\nelif score >= 70:\n    print("Grade: C")\nelse:\n    print("Grade: F")\n\n# Try different scores!\n` },
+        { name: "if / elif / else", type: "reading", sub: "Branching logic", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">if / elif / else</h1><p class="lesson-subtitle">Control which code runs based on conditions.</p><div class="lesson-body"><h3>Basic if statement</h3><p>Python executes the block if the condition is True:</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">if_basic.py</span></div><pre><span class="nm">score</span> <span class="op">=</span> <span class="num">78</span>\n<span class="kw">if</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">90</span>:\n    <span class="fn">print</span>(<span class="st">"A"</span>)\n<span class="kw">elif</span> <span class="nm">score</span> <span class="op">&gt;=</span> <span class="num">80</span>:\n    <span class="fn">print</span>(<span class="st">"B"</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="st">"C or below"</span>)</pre></div><div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>Indentation matters in Python â€” 4 spaces define the block. Never mix tabs and spaces.</p></div><div class="try-it-prompt"><div class="icon">âš¡</div><div><div class="label">Try it yourself</div><div class="desc">Change the score value and observe how the output changes.</div></div></div></div>`, starterCode: `# if / elif / else\nscore = 78\n\nif score >= 90:\n    print("Grade: A")\nelif score >= 80:\n    print("Grade: B")\nelif score >= 70:\n    print("Grade: C")\nelse:\n    print("Grade: F")\n\n# Try different scores!\n` },
         { name: "Comparison & Logical Operators", type: "reading", sub: "and, or, not", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">Comparison & Logical Operators</h1><p class="lesson-subtitle">Combine conditions with and, or, not.</p><div class="lesson-body"><p>Use <code>and</code>, <code>or</code>, <code>not</code> to combine boolean expressions.</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">logical.py</span></div><pre><span class="nm">age</span> <span class="op">=</span> <span class="num">20</span>\n<span class="nm">has_id</span> <span class="op">=</span> <span class="kw">True</span>\n<span class="kw">if</span> <span class="nm">age</span> <span class="op">&gt;=</span> <span class="num">18</span> <span class="kw">and</span> <span class="nm">has_id</span>:\n    <span class="fn">print</span>(<span class="st">"Entry allowed"</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="st">"Entry denied"</span>)</pre></div></div>`, starterCode: `# Logical Operators\nage = 20\nhas_id = True\nhas_ticket = False\n\nif age >= 18 and has_id:\n    print("Entry allowed")\nelse:\n    print("Entry denied")\n\n# Check if can skip queue (has ticket OR is VIP)\nis_vip = False\nif has_ticket or is_vip:\n    print("Skip the queue!")\nelse:\n    print("Please wait in line.")\n` },
         { name: "for Loops", type: "reading", sub: "Iterating over sequences and range()", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">for Loops</h1><p class="lesson-subtitle">Repeat code for each item in a sequence.</p><div class="lesson-body"><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">loops.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):\n    <span class="fn">print</span>(<span class="nm">i</span>)\n\n<span class="kw">for</span> <span class="nm">fruit</span> <span class="kw">in</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]:\n    <span class="fn">print</span>(<span class="nm">fruit</span>)</pre></div></div>`, starterCode: `# for Loops\n\n# Loop with range\nfor i in range(5):\n    print(i)\n\n# Loop over a list\nfruits = ["apple", "banana", "cherry", "mango"]\nfor fruit in fruits:\n    print(f"I like {fruit}")\n\n# range(start, stop, step)\nfor n in range(0, 20, 2):\n    print(n, end=" ")  # even numbers\nprint()  # newline\n` },
-        { name: "while Loops", type: "reading", sub: "Looping until a condition is False", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">while Loops</h1><p class="lesson-subtitle">Repeat as long as a condition stays True.</p><div class="lesson-body"><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">while.py</span></div><pre><span class="nm">count</span> <span class="op">=</span> <span class="num">0</span>\n<span class="kw">while</span> <span class="nm">count</span> <span class="op">&lt;</span> <span class="num">5</span>:\n    <span class="fn">print</span>(<span class="nm">count</span>)\n    <span class="nm">count</span> <span class="op">+=</span> <span class="num">1</span></pre></div><div class="warn-box"><strong>⚠️ WARNING</strong><p>Always make sure the condition eventually becomes False, or you'll have an infinite loop!</p></div></div>`, starterCode: `# while Loops\ncount = 0\nwhile count < 5:\n    print(f"Count: {count}")\n    count += 1\n\nprint("Done!")\n\n# Countdown\nn = 10\nwhile n > 0:\n    print(n, end=" ")\n    n -= 1\nprint("Blastoff!")\n` },
-        { name: "break, continue, pass", type: "reading", sub: "Fine-grained loop control", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">break, continue, pass</h1><p class="lesson-subtitle">Control loop execution with these three keywords.</p><div class="lesson-body"><ul><li><code>break</code> — exit the loop immediately</li><li><code>continue</code> — skip to the next iteration</li><li><code>pass</code> — do nothing (placeholder)</li></ul><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">control.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">==</span> <span class="num">5</span>: <span class="kw">break</span>\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>: <span class="kw">continue</span>\n    <span class="fn">print</span>(<span class="nm">i</span>)  <span class="cm"># prints 1, 3</span></pre></div></div>`, starterCode: `# break, continue, pass\n\n# break - stop when we hit 5\nprint("break example:")\nfor i in range(10):\n    if i == 5:\n        break\n    print(i, end=" ")\nprint()\n\n# continue - skip even numbers\nprint("\\ncontinue example (odds only):")\nfor i in range(10):\n    if i % 2 == 0:\n        continue\n    print(i, end=" ")\nprint()\n\n# pass - placeholder\nfor i in range(3):\n    pass  # do nothing for now\nprint("Loop ran 3 times silently")\n` },
+        { name: "while Loops", type: "reading", sub: "Looping until a condition is False", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">while Loops</h1><p class="lesson-subtitle">Repeat as long as a condition stays True.</p><div class="lesson-body"><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">while.py</span></div><pre><span class="nm">count</span> <span class="op">=</span> <span class="num">0</span>\n<span class="kw">while</span> <span class="nm">count</span> <span class="op">&lt;</span> <span class="num">5</span>:\n    <span class="fn">print</span>(<span class="nm">count</span>)\n    <span class="nm">count</span> <span class="op">+=</span> <span class="num">1</span></pre></div><div class="warn-box"><strong>âš ï¸ WARNING</strong><p>Always make sure the condition eventually becomes False, or you'll have an infinite loop!</p></div></div>`, starterCode: `# while Loops\ncount = 0\nwhile count < 5:\n    print(f"Count: {count}")\n    count += 1\n\nprint("Done!")\n\n# Countdown\nn = 10\nwhile n > 0:\n    print(n, end=" ")\n    n -= 1\nprint("Blastoff!")\n` },
+        { name: "break, continue, pass", type: "reading", sub: "Fine-grained loop control", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">break, continue, pass</h1><p class="lesson-subtitle">Control loop execution with these three keywords.</p><div class="lesson-body"><ul><li><code>break</code> â€” exit the loop immediately</li><li><code>continue</code> â€” skip to the next iteration</li><li><code>pass</code> â€” do nothing (placeholder)</li></ul><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">control.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">==</span> <span class="num">5</span>: <span class="kw">break</span>\n    <span class="kw">if</span> <span class="nm">i</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>: <span class="kw">continue</span>\n    <span class="fn">print</span>(<span class="nm">i</span>)  <span class="cm"># prints 1, 3</span></pre></div></div>`, starterCode: `# break, continue, pass\n\n# break - stop when we hit 5\nprint("break example:")\nfor i in range(10):\n    if i == 5:\n        break\n    print(i, end=" ")\nprint()\n\n# continue - skip even numbers\nprint("\\ncontinue example (odds only):")\nfor i in range(10):\n    if i % 2 == 0:\n        continue\n    print(i, end=" ")\nprint()\n\n# pass - placeholder\nfor i in range(3):\n    pass  # do nothing for now\nprint("Loop ran 3 times silently")\n` },
         { name: "Nested Control Structures", type: "reading", sub: "Combining loops and conditionals elegantly", content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">Nested Control Structures</h1><p class="lesson-subtitle">Combine loops and conditionals for complex logic.</p><div class="lesson-body"><p>You can nest loops inside loops, or conditionals inside loops:</p><div class="code-snippet"><div class="titlebar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="fname">nested.py</span></div><pre><span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):\n    <span class="kw">for</span> <span class="nm">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):\n        <span class="fn">print</span>(<span class="nm">i</span>, <span class="nm">j</span>)</pre></div></div>`, starterCode: `# Nested Control Structures\n\n# Multiplication table\nfor i in range(1, 6):\n    for j in range(1, 6):\n        print(f"{i*j:3}", end="")\n    print()  # newline after each row\n\nprint()\n\n# FizzBuzz\nfor n in range(1, 21):\n    if n % 3 == 0 and n % 5 == 0:\n        print("FizzBuzz")\n    elif n % 3 == 0:\n        print("Fizz")\n    elif n % 5 == 0:\n        print("Buzz")\n    else:\n        print(n)\n` },
-        { name: "Control Flow Challenge", type: "exercise", sub: "Graded: FizzBuzz and beyond", content: `<span class="lesson-type-badge exercise">exercise</span><h1 class="lesson-title">Control Flow Challenge</h1><p class="lesson-subtitle">Master challenge: FizzBuzz and number guessing game logic.</p><div class="lesson-body"><h3>Task 1: FizzBuzz</h3><p>Print numbers 1–30. Replace multiples of 3 with "Fizz", multiples of 5 with "Buzz", and multiples of both with "FizzBuzz".</p><h3>Task 2: Find primes</h3><p>Print all prime numbers from 2 to 30 using a nested loop to check divisibility.</p><div class="tip-box"><strong>💡 TIP</strong><p>A prime number is only divisible by 1 and itself. Check all divisors from 2 up to the number.</p></div></div>`, starterCode: `# Control Flow Challenge\n\n# Task 1: FizzBuzz 1-30\nprint("=== FizzBuzz ===")\nfor n in range(1, 31):\n    # Your code here!\n    pass\n\nprint()\n\n# Task 2: Find primes up to 30\nprint("=== Primes up to 30 ===")\nfor n in range(2, 31):\n    is_prime = True\n    for d in range(2, n):\n        if n % d == 0:\n            is_prime = False\n            break\n    if is_prime:\n        print(n, end=" ")\nprint()\n` },
+        { name: "Control Flow Challenge", type: "exercise", sub: "Graded: FizzBuzz and beyond", content: `<span class="lesson-type-badge exercise">exercise</span><h1 class="lesson-title">Control Flow Challenge</h1><p class="lesson-subtitle">Master challenge: FizzBuzz and number guessing game logic.</p><div class="lesson-body"><h3>Task 1: FizzBuzz</h3><p>Print numbers 1â€“30. Replace multiples of 3 with "Fizz", multiples of 5 with "Buzz", and multiples of both with "FizzBuzz".</p><h3>Task 2: Find primes</h3><p>Print all prime numbers from 2 to 30 using a nested loop to check divisibility.</p><div class="tip-box"><strong>ðŸ’¡ TIP</strong><p>A prime number is only divisible by 1 and itself. Check all divisors from 2 up to the number.</p></div></div>`, starterCode: `# Control Flow Challenge\n\n# Task 1: FizzBuzz 1-30\nprint("=== FizzBuzz ===")\nfor n in range(1, 31):\n    # Your code here!\n    pass\n\nprint()\n\n# Task 2: Find primes up to 30\nprint("=== Primes up to 30 ===")\nfor n in range(2, 31):\n    is_prime = True\n    for d in range(2, n):\n        if n % d == 0:\n            is_prime = False\n            break\n    if is_prime:\n        print(n, end=" ")\nprint()\n` },
       ]
     }
   };
@@ -1202,7 +1264,7 @@ print(f"Type check: {type(name)}")
       4: ["Lists Deep Dive","List Methods","List Comprehensions","Tuples","Dictionaries","Dict Comprehensions","Sets","Nested Data Structures","Data Structures Workout","Data Structures Challenge"],
       5: ["Classes & Instances","Instance vs Class Attributes","Methods: instance, class, static","Inheritance","Dunder / Magic Methods","Encapsulation & Properties","Abstract Classes","Dataclasses","OOP Design Exercise","Composition vs Inheritance","OOP Challenge"],
       6: ["Opening & Reading Files","Writing & Appending Files","Working with Paths","try / except / finally","Built-in Exception Types","Custom Exceptions","File I/O Challenge"],
-      7: ["import & from…import","Standard Library Tour","Writing Your Own Modules","pip & Virtual Environments","__name__ == '__main__'","Modules Challenge"],
+      7: ["import & fromâ€¦import","Standard Library Tour","Writing Your Own Modules","pip & Virtual Environments","__name__ == '__main__'","Modules Challenge"],
       8: ["JSON in Python","CSV Reading & Writing","HTTP Requests with requests","Parsing HTML with BeautifulSoup","Working with APIs","Data Cleaning Patterns","Intro to pandas","Data Challenge"],
       9: ["Decorators","Generators & yield","Context Managers","Type Hints","async / await basics","Async in Practice","Testing with pytest","Mocking & Patching","Performance & Profiling","Memory Management","Advanced Exercises Pack","Capstone Project: CLI App","Capstone Project: Web Scraper","Capstone Project: Data Dashboard"],
     };
@@ -1212,14 +1274,14 @@ print(f"Type check: {type(name)}")
       lessons: (lessonNames[mid] || []).map((name, i) => ({
         name,
         type: i === (lessonNames[mid].length - 1) ? 'exercise' : 'reading',
-        sub: `${name} — ${titles[mid]}`,
-        content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">${name}</h1><p class="lesson-subtitle">Module ${mid} · ${titles[mid]}</p><div class="lesson-body"><p>This lesson covers <strong>${name}</strong> as part of the ${titles[mid]} module. Use the editor on the right to experiment with the starter code.</p><div class="try-it-prompt"><div class="icon">⚡</div><div><div class="label">Try it yourself</div><div class="desc">Run the starter code, modify it, and explore the concepts on your own.</div></div></div></div>`,
+        sub: `${name} â€” ${titles[mid]}`,
+        content: `<span class="lesson-type-badge reading">reading</span><h1 class="lesson-title">${name}</h1><p class="lesson-subtitle">Module ${mid} Â· ${titles[mid]}</p><div class="lesson-body"><p>This lesson covers <strong>${name}</strong> as part of the ${titles[mid]} module. Use the editor on the right to experiment with the starter code.</p><div class="try-it-prompt"><div class="icon">âš¡</div><div><div class="label">Try it yourself</div><div class="desc">Run the starter code, modify it, and explore the concepts on your own.</div></div></div></div>`,
         starterCode: `# ${name}\n# Module ${mid}: ${titles[mid]}\n\n# Starter code for ${name}\nprint("Hello from ${name}!")\n`
       }))
     };
   }
 
-  // ─── URL params ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ URL params â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const params = new URLSearchParams(window.location.search);
   const moduleId = parseInt(params.get('module')) || 1;
   const lessonIndex = (parseInt(params.get('lesson')) || 1) - 1; // 0-based
@@ -1228,7 +1290,7 @@ print(f"Type check: {type(name)}")
   const totalLessons = mod ? mod.lessons.length : 1;
   let currentLesson = Math.max(0, Math.min(lessonIndex, totalLessons - 1));
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function lessonUrl(mId, lIdx) {
     return `lesson.html?module=${mId}&lesson=${lIdx + 1}`;
   }
@@ -1245,7 +1307,7 @@ print(f"Type check: {type(name)}")
     document.getElementById('breadModuleLink').href = `lesson-preview.html?module=${moduleId}`;
     document.getElementById('breadLessonName').textContent = lesson.name;
     document.getElementById('backToModule').href = `lesson-preview.html?module=${moduleId}`;
-    document.title = `Mindflex — ${lesson.name}`;
+    document.title = `Mindflex â€” ${lesson.name}`;
 
     // Nav info
     document.getElementById('lessonNavInfo').textContent = `Lesson ${lIdx + 1} of ${totalLessons}`;
@@ -1257,17 +1319,17 @@ print(f"Type check: {type(name)}")
     const nextBtn = document.getElementById('nextBtn');
     if (lIdx === 0) {
       prevBtn.href = `lesson-preview.html?module=${moduleId}`;
-      prevBtn.textContent = '← Module';
+      prevBtn.textContent = 'â† Module';
     } else {
       prevBtn.href = lessonUrl(moduleId, lIdx - 1);
-      prevBtn.textContent = '← Prev';
+      prevBtn.textContent = 'â† Prev';
     }
     if (lIdx === totalLessons - 1) {
       nextBtn.href = `lesson-preview.html?module=${moduleId + 1 > 9 ? 1 : moduleId + 1}`;
-      nextBtn.textContent = 'Next Module →';
+      nextBtn.textContent = 'Next Module â†’';
     } else {
       nextBtn.href = lessonUrl(moduleId, lIdx + 1);
-      nextBtn.textContent = 'Next →';
+      nextBtn.textContent = 'Next â†’';
     }
 
     // Content
@@ -1283,10 +1345,10 @@ print(f"Type check: {type(name)}")
     const bannerNext = document.getElementById('completeBannerNext');
     if (lIdx < totalLessons - 1) {
       bannerNext.href = lessonUrl(moduleId, lIdx + 1);
-      bannerNext.textContent = 'Next Lesson →';
+      bannerNext.textContent = 'Next Lesson â†’';
     } else {
       bannerNext.href = `lesson-preview.html?module=${moduleId}`;
-      bannerNext.textContent = 'Back to Module →';
+      bannerNext.textContent = 'Back to Module â†’';
     }
 
     // Update URL
@@ -1295,7 +1357,7 @@ print(f"Type check: {type(name)}")
     document.querySelector('.lesson-content').scrollTop = 0;
   }
 
-  // ─── Python execution via Pyodide ────────────────────────────────────────────
+  // â”€â”€â”€ Python execution via Pyodide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let pyodide = null;
   let pyodideReady = false;
 
@@ -1309,7 +1371,7 @@ print(f"Type check: {type(name)}")
       pyodideReady = true;
       setStatus('ready', 'ok');
     } catch(e) {
-      setStatus('pyodide unavailable — using fallback', '');
+      setStatus('pyodide unavailable â€” using fallback', '');
     }
   }
   loadPyodide();
@@ -1342,7 +1404,7 @@ print(f"Type check: {type(name)}")
     const code = getEditorCode();
     const terminal = document.getElementById('outputTerminal');
     terminal.innerHTML = '';
-    setStatus('running…', '');
+    setStatus('runningâ€¦', '');
 
     const div = document.createElement('div');
     div.className = 'prompt';
@@ -1387,163 +1449,62 @@ print(f"Type check: {type(name)}")
       }
     }
   }
+  // CodeMirror editor setup
+  let lessonView = null;
+  let cmReady = false;
+  let pendingCode = null;
 
-  // ─── CodeMirror 6 Editor setup ──────────────────────────────────────────────
-  // Loaded asynchronously via ES modules from esm.sh
-  let lessonView = null;  // will hold the EditorView instance
-
-  async function initCodeMirror(initialCode) {
-    const [
-      { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection },
-      { EditorState },
-      { defaultKeymap, indentWithTab, history, historyKeymap },
-      { python },
-      { syntaxHighlighting, bracketMatching, indentOnInput },
-      { HighlightStyle },
-      { tags },
-      { autocompletion, completionKeymap },
-    ] = await Promise.all([
-      import('https://esm.sh/@codemirror/view@6.36.5'),
-      import('https://esm.sh/@codemirror/state@6.5.2'),
-      import('https://esm.sh/@codemirror/commands@6.8.1'),
-      import('https://esm.sh/@codemirror/lang-python@6.1.9'),
-      import('https://esm.sh/@codemirror/language@6.11.0'),
-      import('https://esm.sh/@codemirror/language@6.11.0'),
-      import('https://esm.sh/@lezer/highlight@1.2.1'),
-      import('https://esm.sh/@codemirror/autocomplete@6.18.6'),
-    ]);
-
-    // Syntax highlight style — exact same palette as the lesson code snippets
-    const mindflexTheme = HighlightStyle.define([
-      { tag: tags.keyword,                              color: '#ff79c6' },
-      { tag: tags.controlKeyword,                       color: '#ff79c6' },
-      { tag: tags.operatorKeyword,                      color: '#ff79c6' },
-      { tag: tags.definitionKeyword,                    color: '#ff79c6' },
-      { tag: tags.moduleKeyword,                        color: '#ff79c6' },
-      { tag: tags.self,                                 color: '#ff79c6', fontStyle: 'italic' },
-      { tag: tags.bool,                                 color: '#bd93f9' },
-      { tag: tags.null,                                 color: '#bd93f9' },
-      { tag: tags.number,                               color: '#bd93f9' },
-      { tag: tags.float,                                color: '#bd93f9' },
-      { tag: tags.string,                               color: '#f1fa8c' },
-      { tag: tags.regexp,                               color: '#f1fa8c' },
-      { tag: tags.escape,                               color: '#ff79c6' },
-      { tag: tags.special(tags.string),                 color: '#f1fa8c' },
-      { tag: tags.comment,                              color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.lineComment,                          color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.blockComment,                         color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.function(tags.variableName),          color: '#50fa7b' },
-      { tag: tags.function(tags.definition(tags.variableName)), color: '#50fa7b' },
-      { tag: tags.function(tags.propertyName),          color: '#50fa7b' },
-      { tag: tags.definition(tags.variableName),        color: '#e8eaf2' },
-      { tag: tags.definition(tags.propertyName),        color: '#4f8cff' },
-      { tag: tags.className,                            color: '#00e5a0' },
-      { tag: tags.definition(tags.className),           color: '#00e5a0' },
-      { tag: tags.typeName,                             color: '#00e5a0' },
-      { tag: tags.typeOperator,                         color: '#ff79c6' },
-      { tag: tags.propertyName,                         color: '#4f8cff' },
-      { tag: tags.variableName,                         color: '#e8eaf2' },
-      { tag: tags.attributeName,                        color: '#4f8cff' },
-      { tag: tags.namespace,                            color: '#00e5a0' },
-      { tag: tags.decorator,                            color: '#ff79c6' },
-      { tag: tags.operator,                             color: '#ff79c6' },
-      { tag: tags.arithmeticOperator,                   color: '#ff79c6' },
-      { tag: tags.compareOperator,                      color: '#ff79c6' },
-      { tag: tags.bitwiseOperator,                      color: '#ff79c6' },
-      { tag: tags.logicOperator,                        color: '#ff79c6' },
-      { tag: tags.punctuation,                          color: '#7a7f96' },
-      { tag: tags.bracket,                              color: '#7a7f96' },
-      { tag: tags.paren,                                color: '#7a7f96' },
-      { tag: tags.squareBracket,                        color: '#7a7f96' },
-      { tag: tags.brace,                                color: '#7a7f96' },
-      { tag: tags.separator,                            color: '#7a7f96' },
-      { tag: tags.invalid,                              color: '#ff5e7e' },
-    ]);
-
-    // Python autocomplete
-    const pyBuiltins = [
-      'print','len','range','type','int','float','str','bool','list','dict',
-      'tuple','set','input','open','enumerate','zip','map','filter','sorted',
-      'reversed','sum','min','max','abs','round','isinstance','issubclass',
-      'hasattr','getattr','setattr','repr','id','hash','iter','next',
-      'any','all','dir','vars','callable','staticmethod','classmethod',
-      'property','super',
-    ].map(label => ({ label, type: 'function', detail: 'builtin' }));
-
-    const pyKeywords = [
-      'and','as','assert','async','await','break','class','continue','def',
-      'del','elif','else','except','finally','for','from','global','if',
-      'import','in','is','lambda','nonlocal','not','or','pass','raise',
-      'return','try','while','with','yield','True','False','None','self',
-    ].map(label => ({ label, type: 'keyword' }));
-
-    function pythonCompletions(context) {
-      const word = context.matchBefore(/\w*/);
-      if (!word || (word.from === word.to && !context.explicit)) return null;
-      const code = context.state.doc.toString();
-      const identifiers = [...new Set(code.match(/\b[a-zA-Z_]\w*/g) || [])];
-      const docWords = identifiers
-        .filter(w => w !== word.text && !pyKeywords.find(k=>k.label===w) && !pyBuiltins.find(b=>b.label===w))
-        .map(label => ({ label, type: 'variable' }));
-      return { from: word.from, options: [...pyKeywords, ...pyBuiltins, ...docWords], validFor: /^\w*$/ };
-    }
-
+  function initCodeMirror(initialCode) {
     const host = document.getElementById('lessonCmEditor');
     if (!host) return;
+    if (!window.CodeMirror) {
+      setStatus('CodeMirror failed to load', 'err');
+      return;
+    }
 
-    lessonView = new EditorView({
-      state: EditorState.create({
-        doc: initialCode || '',
-        extensions: [
-          lineNumbers(),
-          highlightActiveLine(),
-          highlightActiveLineGutter(),
-          history(),
-          drawSelection(),
-          indentOnInput(),
-          bracketMatching(),
-          python(),
-          syntaxHighlighting(mindflexTheme),
-          autocompletion({ override: [pythonCompletions], activateOnTyping: true, maxRenderedOptions: 10 }),
-          keymap.of([
-            ...defaultKeymap,
-            ...historyKeymap,
-            ...completionKeymap,
-            indentWithTab,
-            { key: 'Ctrl-Enter', run: () => { runCode(); return true; } },
-            { key: 'Mod-Enter',  run: () => { runCode(); return true; } },
-          ]),
-          EditorView.theme({
-            '&': { background: '#0d0f14', color: '#e8eaf2', height: '100%' },
-            '.cm-scroller': { overflow: 'auto', fontFamily: "'Space Mono', monospace", fontSize: '0.82rem', lineHeight: '1.9' },
-            '.cm-gutters': { background: '#0d0f14', borderRight: '1px solid #1f2330', color: '#3a3f56', display: 'flex', flexDirection: 'row' },
-            '.cm-lineNumbers': { display: 'flex', flexDirection: 'column', minWidth: '44px' },
-            '.cm-lineNumbers .cm-gutterElement': { display: 'block', width: '100%', padding: '0 10px 0 8px', textAlign: 'right', fontSize: '0.75rem', whiteSpace: 'nowrap' },
-            '.cm-activeLineGutter': { background: 'rgba(0,229,160,0.06)', color: '#00e5a0' },
-            '.cm-activeLine': { background: 'rgba(0,229,160,0.04)' },
-            '&.cm-focused .cm-cursor': { borderLeftColor: '#00e5a0', borderLeftWidth: '2px' },
-            '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: 'rgba(0,229,160,0.18)' },
-            '.cm-tooltip.cm-tooltip-autocomplete': { background: '#181b22', border: '1px solid #1f2330', borderRadius: '6px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' },
-            '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { fontFamily: "'Space Mono',monospace", fontSize: '0.75rem', padding: '0.3rem 0.75rem', color: '#7a7f96' },
-            '.cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected]': { background: 'rgba(0,229,160,0.12)', color: '#e8eaf2' },
-            '.cm-completionDetail': { color: '#3a3f56', fontSize: '0.68rem' },
-          }),
-        ],
-      }),
-      parent: host,
+    const textarea = document.createElement('textarea');
+    host.appendChild(textarea);
+    const cm = CodeMirror.fromTextArea(textarea, {
+      mode: 'python',
+      lineNumbers: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: false,
+      lineWrapping: true,
+      matchBrackets: true,
+      extraKeys: {
+        Tab(editor) {
+          if (editor.somethingSelected()) editor.indentSelection('add');
+          else editor.replaceSelection('    ', 'end');
+        },
+        'Ctrl-Enter': () => { runCode(); return true; },
+        'Cmd-Enter': () => { runCode(); return true; },
+      },
     });
+    cm.setValue(initialCode || '');
+
+    lessonView = {
+      get state() {
+        const value = cm.getValue();
+        return { doc: { toString: () => value, length: value.length } };
+      },
+      dispatch(spec) {
+        if (!spec || !spec.changes) return;
+        const from = spec.changes.from || 0;
+        const to = spec.changes.to == null ? from : spec.changes.to;
+        const insert = spec.changes.insert || '';
+        cm.replaceRange(insert, cm.posFromIndex(from), cm.posFromIndex(to));
+      },
+      focus() { cm.focus(); },
+      refresh() { cm.refresh(); },
+    };
 
     cmReady = true;
-
-    // If a lesson was loaded before CM was ready, apply its code now
     if (pendingCode !== null) {
       setEditorCode(pendingCode);
       pendingCode = null;
     }
   }
-
-  let cmReady = false;
-  let pendingCode = null;
 
   function getEditorCode() {
     if (lessonView) return lessonView.state.doc.toString();
@@ -1553,12 +1514,12 @@ print(f"Type check: {type(name)}")
   function setEditorCode(code) {
     if (lessonView) {
       lessonView.dispatch({ changes: { from: 0, to: lessonView.state.doc.length, insert: code } });
+      lessonView.refresh();
     } else {
       pendingCode = code;
     }
   }
-
-  // ─── Buttons ──────────────────────────────────────────────────────────────
+  // Buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   document.getElementById('runBtn').addEventListener('click', runCode);
   document.getElementById('resetBtn').addEventListener('click', () => {
     if (!mod) return;
@@ -1566,7 +1527,7 @@ print(f"Type check: {type(name)}")
     resetOutput();
   });
 
-  // ─── Init ─────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (mod) {
     loadLesson(currentLesson);
   } else {
@@ -1576,5 +1537,7 @@ print(f"Type check: {type(name)}")
   // Start CodeMirror after lesson data is ready
   initCodeMirror(mod?.lessons[currentLesson]?.starterCode || '');
   </script>
-</body>
-</html>
+
+
+</body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483000;"></div></html>
+
