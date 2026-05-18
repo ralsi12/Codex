@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mindflex — Python Sandbox</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mindflex â€” Python Sandbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <style>
     :root {
       --bg: #0a0c10;
@@ -241,7 +241,7 @@
     .cm-content { padding: 1.1rem 0 !important; caret-color: var(--accent) !important; }
     .cm-line { padding: 0 1.25rem 0 0 !important; }
 
-    /* Gutter / line numbers — each number vertically stacked, one per line */
+    /* Gutter / line numbers â€” each number vertically stacked, one per line */
     .cm-gutters {
       background: #0d0f14 !important;
       border-right: 1px solid var(--border) !important;
@@ -276,7 +276,7 @@
     .cm-selectionBackground { background: rgba(0,229,160,.18) !important; }
     .cm-cursor { border-left-color: var(--accent) !important; }
 
-    /* ── Syntax token colors matching lesson snippets ── */
+    /* â”€â”€ Syntax token colors matching lesson snippets â”€â”€ */
     /* keywords: if, for, def, class, return, import, etc. */
     .cm-keyword { color: var(--hl-kw) !important; }
     /* built-in functions: print, len, range, etc. */
@@ -312,6 +312,22 @@
       color: var(--accent) !important;
       border-radius: 2px;
     }
+    .CodeMirror {
+      flex: 1;
+      height: 100%;
+      background: #0d0f14;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 1.9;
+    }
+    .CodeMirror-scroll { height: 100%; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+    .CodeMirror-gutters { background: #0d0f14; border-right: 1px solid var(--border); }
+    .CodeMirror-linenumber { color: var(--text-dimmer); font-family: var(--mono); font-size: .78rem; padding: 0 10px 0 8px; }
+    .CodeMirror-cursor { border-left-color: var(--accent); }
+    .CodeMirror-selected { background: rgba(0,229,160,.18) !important; }
+    .CodeMirror-activeline-background { background: rgba(0,229,160,.04); }
+    .CodeMirror-matchingbracket { background: rgba(0,229,160,.15); color: var(--accent) !important; border-radius: 2px; }
 
     /* Autocomplete popup */
     .cm-tooltip { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; box-shadow: 0 8px 32px rgba(0,0,0,.5) !important; }
@@ -462,8 +478,8 @@
       <span class="sandbox-badge">sandbox</span>
     </div>
     <div class="nav-right">
-      <a href="lesson-preview.html?module=1" class="nav-link">← Curriculum</a>
-      <a href="lesson.html?module=4&lesson=1" class="nav-link">Open a Lesson</a>
+      <a href="lesson-preview.html?module=1" class="nav-link">â† Curriculum</a>
+      <a href="lesson.html?module=4&amp;lesson=1" class="nav-link">Open a Lesson</a>
     </div>
   </nav>
 
@@ -474,19 +490,19 @@
     </div>
     <div class="toolbar-right">
       <select class="snippet-select" id="snippetSelect">
-        <option value="">Load a snippet…</option>
-        <option value="lists">Module 4 · Lists</option>
-        <option value="functions">Module 3 · Functions</option>
-        <option value="loops">Module 2 · Loops</option>
-        <option value="oop">Module 5 · OOP</option>
-        <option value="fileio">Module 6 · File I/O</option>
+        <option value="">Load a snippetâ€¦</option>
+        <option value="lists">Module 4 Â· Lists</option>
+        <option value="functions">Module 3 Â· Functions</option>
+        <option value="loops">Module 2 Â· Loops</option>
+        <option value="oop">Module 5 Â· OOP</option>
+        <option value="fileio">Module 6 Â· File I/O</option>
         <option value="hello">Hello World</option>
         <option value="blank">Blank</option>
       </select>
       <button class="clear-btn" id="clearBtn">Clear</button>
       <span class="shortcut-hint">Ctrl+Enter to run</span>
       <button class="run-btn" id="runBtn">
-        <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"/></svg>
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M1 1l8 5-8 5V1z" fill="currentColor"></path></svg>
         Run
       </button>
     </div>
@@ -506,7 +522,7 @@
           <button class="output-clear-btn" id="outputClearBtn">clear</button>
         </div>
         <div class="output-terminal" id="outputTerminal">
-          <span class="info-line"># Python sandbox — write code and press Run</span>
+          <span class="info-line"># Python sandbox â€” write code and press Run</span>
         </div>
       </div>
       <div class="cheatsheet">
@@ -518,89 +534,62 @@
 
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
-    Loading Python runtime…
+    Loading Python runtimeâ€¦
   </div>
+  <!-- CodeMirror 5 browser build. CodeMirror 6 is not published as a cdnjs global bundle. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <!-- CodeMirror 6 via CDN bundles -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" crossorigin="anonymous"></script>
+  <script>
+    function createMindflexEditor(parent, doc, onRun) {
+      if (!window.CodeMirror) {
+        throw new Error('CodeMirror failed to load. Check the CodeMirror CDN script URLs.');
+      }
 
-  <script type="module">
-    // Use esm.sh CDN for CodeMirror 6 modules
-    const CM_BASE = 'https://esm.sh';
+      const textarea = document.createElement('textarea');
+      parent.appendChild(textarea);
+      const cm = CodeMirror.fromTextArea(textarea, {
+        mode: 'python',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        lineWrapping: true,
+        matchBrackets: true,
+        extraKeys: {
+          Tab(editor) {
+            if (editor.somethingSelected()) editor.indentSelection('add');
+            else editor.replaceSelection('    ', 'end');
+          },
+          'Ctrl-Enter': onRun,
+          'Cmd-Enter': onRun,
+        },
+      });
+      cm.setValue(doc);
 
-    const [
-      { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection },
-      { EditorState, Compartment },
-      { defaultKeymap, indentWithTab, history, historyKeymap },
-      { python },
-      { syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, indentOnInput },
-      { autocompletion, completionKeymap, closeCompletion },
-      { lintKeymap },
-      { tags },
-      { HighlightStyle },
-    ] = await Promise.all([
-      import(`${CM_BASE}/@codemirror/view@6.36.5`),
-      import(`${CM_BASE}/@codemirror/state@6.5.2`),
-      import(`${CM_BASE}/@codemirror/commands@6.8.1`),
-      import(`${CM_BASE}/@codemirror/lang-python@6.1.9`),
-      import(`${CM_BASE}/@codemirror/language@6.11.0`),
-      import(`${CM_BASE}/@codemirror/autocomplete@6.18.6`),
-      import(`${CM_BASE}/@codemirror/lint@6.8.5`),
-      import(`${CM_BASE}/@lezer/highlight@1.2.1`),
-      import(`${CM_BASE}/@codemirror/language@6.11.0`),
-    ]);
-
-    // ── Custom highlight style matching lesson snippet colors ─────────────────
-    const mindflexHighlight = HighlightStyle.define([
-      { tag: tags.keyword,            color: '#ff79c6' },
-      { tag: tags.controlKeyword,     color: '#ff79c6' },
-      { tag: tags.operatorKeyword,    color: '#ff79c6' },
-      { tag: tags.definitionKeyword,  color: '#ff79c6' },
-      { tag: tags.moduleKeyword,      color: '#ff79c6' },
-      { tag: tags.self,               color: '#ff79c6', fontStyle: 'italic' },
-      { tag: tags.bool,               color: '#bd93f9' },
-      { tag: tags.null,               color: '#bd93f9' },
-      { tag: tags.number,             color: '#bd93f9' },
-      { tag: tags.float,              color: '#bd93f9' },
-      { tag: tags.string,             color: '#f1fa8c' },
-      { tag: tags.regexp,             color: '#f1fa8c' },
-      { tag: tags.escape,             color: '#ff79c6' },
-      { tag: tags.special(tags.string), color: '#f1fa8c' },
-      { tag: tags.comment,            color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.lineComment,        color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.blockComment,       color: '#6272a4', fontStyle: 'italic' },
-      { tag: tags.function(tags.variableName), color: '#50fa7b' },
-      { tag: tags.function(tags.definition(tags.variableName)), color: '#50fa7b' },
-      { tag: tags.function(tags.propertyName), color: '#50fa7b' },
-      { tag: tags.definition(tags.variableName), color: '#e8eaf2' },
-      { tag: tags.definition(tags.propertyName), color: '#4f8cff' },
-      { tag: tags.className,          color: '#00e5a0' },
-      { tag: tags.definition(tags.className), color: '#00e5a0' },
-      { tag: tags.typeName,           color: '#00e5a0' },
-      { tag: tags.typeOperator,       color: '#ff79c6' },
-      { tag: tags.propertyName,       color: '#4f8cff' },
-      { tag: tags.variableName,       color: '#e8eaf2' },
-      { tag: tags.attributeName,      color: '#4f8cff' },
-      { tag: tags.namespace,          color: '#00e5a0' },
-      { tag: tags.decorator,          color: '#ff79c6' },
-      { tag: tags.operator,           color: '#ff79c6' },
-      { tag: tags.arithmeticOperator, color: '#ff79c6' },
-      { tag: tags.compareOperator,    color: '#ff79c6' },
-      { tag: tags.bitwiseOperator,    color: '#ff79c6' },
-      { tag: tags.logicOperator,      color: '#ff79c6' },
-      { tag: tags.punctuation,        color: '#7a7f96' },
-      { tag: tags.bracket,            color: '#7a7f96' },
-      { tag: tags.angleBracket,       color: '#7a7f96' },
-      { tag: tags.paren,              color: '#7a7f96' },
-      { tag: tags.squareBracket,      color: '#7a7f96' },
-      { tag: tags.brace,              color: '#7a7f96' },
-      { tag: tags.separator,          color: '#7a7f96' },
-      { tag: tags.special(tags.variableName), color: '#bd93f9' },
-      { tag: tags.labelName,          color: '#4f8cff' },
-      { tag: tags.invalid,            color: '#ff5e7e' },
-    ]);
-
-    // ── Python autocomplete completions ──────────────────────────────────────
+      return {
+        get state() {
+          const value = cm.getValue();
+          return {
+            doc: { toString: () => value, length: value.length },
+            selection: { main: { head: cm.indexFromPos(cm.getCursor()) } },
+          };
+        },
+        dispatch(spec) {
+          if (spec && spec.changes) {
+            const from = spec.changes.from || 0;
+            const to = spec.changes.to == null ? from : spec.changes.to;
+            const insert = spec.changes.insert || '';
+            cm.replaceRange(insert, cm.posFromIndex(from), cm.posFromIndex(to));
+          }
+          if (spec && spec.selection) cm.setCursor(cm.posFromIndex(spec.selection.anchor));
+        },
+        focus() { cm.focus(); },
+        refresh() { cm.refresh(); },
+      };
+    }
+    // Python autocomplete completions
     const pyBuiltins = [
       'print','len','range','type','int','float','str','bool','list','dict',
       'tuple','set','input','open','enumerate','zip','map','filter','sorted',
@@ -633,18 +622,18 @@
       };
     }
 
-    // ── Snippets ──────────────────────────────────────────────────────────────
+    // â”€â”€ Snippets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const SNIPPETS = {
-      lists: `# Module 4 · Lists in Python\n\n# Create a list of items\nfruits = ["apple", "banana", "cherry"]\n\n# Access elements by index (0-based)\nprint(fruits[0])   # → "apple"\nprint(fruits[-1])  # → "cherry"\n\n# List methods\nfruits.append("mango")\nfruits.remove("banana")\n\n# Iterate over a list\nfor fruit in fruits:\n    print(f"I like {fruit}")\n\n# List comprehension (Pythonic!)\nupper = [f.upper() for f in fruits]\nprint(upper)\n`,
-      functions: `# Module 3 · Functions & Scope\n\n# Defining and calling a function\ndef greet(name, greeting="Hello"):\n    return f"{greeting}, {name}!"\n\nprint(greet("Alice"))\nprint(greet("Bob", "Hey"))\n\n# *args and **kwargs\ndef total(*nums):\n    return sum(nums)\n\nprint(total(1, 2, 3, 4))  # → 10\n\n# Lambda expressions\nsquare = lambda x: x ** 2\nprint(square(7))  # → 49\n\n# Higher-order functions\nnumbers = [3, 1, 4, 1, 5, 9, 2, 6]\nevens = list(filter(lambda n: n % 2 == 0, numbers))\nprint(evens)\n`,
-      loops: `# Module 2 · Control Flow\n\nscore = 78\n\n# if / elif / else\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelse:\n    print("C or below")\n\n# for loop with range\nfor i in range(1, 6):\n    print(i, i ** 2)\n\n# while with break\nn = 0\nwhile True:\n    n += 1\n    if n == 5: break\n\nprint(f"Stopped at n={n}")\n\n# List iteration\ncolors = ["red", "green", "blue"]\nfor i, color in enumerate(colors):\n    print(f"{i}: {color}")\n`,
-      oop: `# Module 5 · Object-Oriented Python\n\nclass Animal:\n    def __init__(self, name, sound):\n        self.name = name\n        self.sound = sound\n\n    def speak(self):\n        return f"{self.name} says {self.sound}!"\n\n    def __repr__(self):\n        return f"Animal({self.name!r})"\n\nclass Dog(Animal):\n    def __init__(self, name):\n        super().__init__(name, "Woof")\n\n    def fetch(self):\n        return f"{self.name} fetches the ball!"\n\nrex = Dog("Rex")\nprint(rex.speak())\nprint(rex.fetch())\nprint(repr(rex))\nprint(isinstance(rex, Animal))  # True\n`,
-      fileio: `# Module 6 · File I/O & Exceptions\n\n# Handling exceptions gracefully\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f"Caught: {e}")\nfinally:\n    print("Finally block always runs.")\n\n# Multiple exception types\ndef safe_int(s):\n    try:\n        return int(s)\n    except ValueError:\n        return None\n\nprint(safe_int("42"))      # → 42\nprint(safe_int("hello"))   # → None\n\n# Custom exception\nclass NegativeError(ValueError):\n    pass\n\ndef sqrt_safe(x):\n    if x < 0:\n        raise NegativeError(f"Cannot sqrt negative: {x}")\n    return x ** 0.5\n\ntry:\n    print(sqrt_safe(16))\n    print(sqrt_safe(-1))\nexcept NegativeError as e:\n    print(f"Error: {e}")\n`,
+      lists: `# Module 4 Â· Lists in Python\n\n# Create a list of items\nfruits = ["apple", "banana", "cherry"]\n\n# Access elements by index (0-based)\nprint(fruits[0])   # â†’ "apple"\nprint(fruits[-1])  # â†’ "cherry"\n\n# List methods\nfruits.append("mango")\nfruits.remove("banana")\n\n# Iterate over a list\nfor fruit in fruits:\n    print(f"I like {fruit}")\n\n# List comprehension (Pythonic!)\nupper = [f.upper() for f in fruits]\nprint(upper)\n`,
+      functions: `# Module 3 Â· Functions & Scope\n\n# Defining and calling a function\ndef greet(name, greeting="Hello"):\n    return f"{greeting}, {name}!"\n\nprint(greet("Alice"))\nprint(greet("Bob", "Hey"))\n\n# *args and **kwargs\ndef total(*nums):\n    return sum(nums)\n\nprint(total(1, 2, 3, 4))  # â†’ 10\n\n# Lambda expressions\nsquare = lambda x: x ** 2\nprint(square(7))  # â†’ 49\n\n# Higher-order functions\nnumbers = [3, 1, 4, 1, 5, 9, 2, 6]\nevens = list(filter(lambda n: n % 2 == 0, numbers))\nprint(evens)\n`,
+      loops: `# Module 2 Â· Control Flow\n\nscore = 78\n\n# if / elif / else\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelse:\n    print("C or below")\n\n# for loop with range\nfor i in range(1, 6):\n    print(i, i ** 2)\n\n# while with break\nn = 0\nwhile True:\n    n += 1\n    if n == 5: break\n\nprint(f"Stopped at n={n}")\n\n# List iteration\ncolors = ["red", "green", "blue"]\nfor i, color in enumerate(colors):\n    print(f"{i}: {color}")\n`,
+      oop: `# Module 5 Â· Object-Oriented Python\n\nclass Animal:\n    def __init__(self, name, sound):\n        self.name = name\n        self.sound = sound\n\n    def speak(self):\n        return f"{self.name} says {self.sound}!"\n\n    def __repr__(self):\n        return f"Animal({self.name!r})"\n\nclass Dog(Animal):\n    def __init__(self, name):\n        super().__init__(name, "Woof")\n\n    def fetch(self):\n        return f"{self.name} fetches the ball!"\n\nrex = Dog("Rex")\nprint(rex.speak())\nprint(rex.fetch())\nprint(repr(rex))\nprint(isinstance(rex, Animal))  # True\n`,
+      fileio: `# Module 6 Â· File I/O & Exceptions\n\n# Handling exceptions gracefully\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f"Caught: {e}")\nfinally:\n    print("Finally block always runs.")\n\n# Multiple exception types\ndef safe_int(s):\n    try:\n        return int(s)\n    except ValueError:\n        return None\n\nprint(safe_int("42"))      # â†’ 42\nprint(safe_int("hello"))   # â†’ None\n\n# Custom exception\nclass NegativeError(ValueError):\n    pass\n\ndef sqrt_safe(x):\n    if x < 0:\n        raise NegativeError(f"Cannot sqrt negative: {x}")\n    return x ** 0.5\n\ntry:\n    print(sqrt_safe(16))\n    print(sqrt_safe(-1))\nexcept NegativeError as e:\n    print(f"Error: {e}")\n`,
       hello: `# Hello, Python!\n\nname = "World"\nprint(f"Hello, {name}!")\n\n# Try some basics:\nfor i in range(1, 6):\n    print(f"  {i}: {'*' * i}")\n`,
       blank: `# Python Sandbox\n# Write your code here!\n\n`,
     };
 
-    // ── Tab manager ───────────────────────────────────────────────────────────
+    // â”€â”€ Tab manager â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let tabs = [{ id: 1, name: 'main.py', code: SNIPPETS.lists }];
     let activeTabId = 1;
     let nextTabId = 2;
@@ -654,7 +643,7 @@
       container.innerHTML = tabs.map(t => `
         <div class="file-tab${t.id === activeTabId ? ' active' : ''}" data-id="${t.id}">
           ${t.name}
-          ${tabs.length > 1 ? `<span style="margin-left:.4rem;color:var(--text-dimmer);font-size:.65rem;" data-close="${t.id}">×</span>` : ''}
+          ${tabs.length > 1 ? `<span style="margin-left:.4rem;color:var(--text-dimmer);font-size:.65rem;" data-close="${t.id}">Ã—</span>` : ''}
         </div>
       `).join('');
       container.querySelectorAll('.file-tab').forEach(el => {
@@ -687,63 +676,21 @@
       else renderTabs();
     }
 
-    // ── Build CodeMirror editor ───────────────────────────────────────────────
+    // â”€â”€ Build CodeMirror editor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const startDoc = SNIPPETS.lists;
+    const view = createMindflexEditor(
+      document.getElementById('cmEditor'),
+      startDoc,
+      () => { runCode(); return true; }
+    );
 
-    const view = new EditorView({
-      state: EditorState.create({
-        doc: startDoc,
-        extensions: [
-          lineNumbers(),
-          highlightActiveLine(),
-          highlightActiveLineGutter(),
-          history(),
-          drawSelection(),
-          indentOnInput(),
-          bracketMatching(),
-          python(),
-          syntaxHighlighting(mindflexHighlight),
-          autocompletion({
-            override: [pythonCompletions],
-            activateOnTyping: true,
-            maxRenderedOptions: 12,
-          }),
-          keymap.of([
-            ...defaultKeymap,
-            ...historyKeymap,
-            ...completionKeymap,
-            indentWithTab,
-            { key: 'Ctrl-Enter', run: () => { runCode(); return true; } },
-            { key: 'Mod-Enter', run: () => { runCode(); return true; } },
-          ]),
-          EditorView.theme({
-            '&': { background: '#0d0f14', color: '#e8eaf2', height: '100%' },
-            '.cm-scroller': { overflow: 'auto', fontFamily: "'Space Mono', monospace", fontSize: '0.82rem', lineHeight: '1.9' },
-            '.cm-gutters': { background: '#0d0f14', borderRight: '1px solid #1f2330', color: '#3a3f56', display: 'flex', flexDirection: 'row' },
-            '.cm-lineNumbers': { display: 'flex', flexDirection: 'column', minWidth: '44px' },
-            '.cm-lineNumbers .cm-gutterElement': { display: 'block', width: '100%', padding: '0 10px 0 8px', textAlign: 'right', fontSize: '0.78rem', whiteSpace: 'nowrap' },
-            '.cm-activeLineGutter': { background: 'rgba(0,229,160,0.06)', color: '#00e5a0' },
-            '.cm-activeLine': { background: 'rgba(0,229,160,0.04)' },
-            '&.cm-focused .cm-cursor': { borderLeftColor: '#00e5a0' },
-            '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: 'rgba(0,229,160,0.18)' },
-            '.cm-tooltip.cm-tooltip-autocomplete': { background: '#181b22', border: '1px solid #1f2330', borderRadius: '6px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' },
-            '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { fontFamily: "'Space Mono', monospace", fontSize: '0.76rem', padding: '0.3rem 0.75rem', color: '#7a7f96' },
-            '.cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected]': { background: 'rgba(0,229,160,0.12)', color: '#e8eaf2' },
-            '.cm-completionDetail': { color: '#3a3f56', fontSize: '0.68rem' },
-          }),
-          EditorView.lineWrapping,
-        ],
-      }),
-      parent: document.getElementById('cmEditor'),
-    });
-
-    // ── Helper: get code from editor ──────────────────────────────────────────
+    // â”€â”€ Helper: get code from editor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function getCode() { return view.state.doc.toString(); }
     function setCode(code) {
       view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: code } });
     }
 
-    // ── Snippet loader ────────────────────────────────────────────────────────
+    // â”€â”€ Snippet loader â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     document.getElementById('snippetSelect').addEventListener('change', function() {
       const val = this.value;
       if (!val || !SNIPPETS[val]) { this.value = ''; return; }
@@ -757,7 +704,7 @@
       document.getElementById('outputTerminal').innerHTML = '';
     });
 
-    // ── Pyodide ───────────────────────────────────────────────────────────────
+    // â”€â”€ Pyodide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let pyodide = null;
     let pyodideReady = false;
 
@@ -773,7 +720,7 @@
       } catch(e) {
         const el = document.getElementById('loadingOverlay');
         el.querySelector('.loading-spinner').style.display = 'none';
-        el.childNodes[1].textContent = ' Python runtime unavailable — using basic mode';
+        el.childNodes[1].textContent = ' Python runtime unavailable â€” using basic mode';
         setTimeout(() => el.classList.add('hidden'), 3000);
       }
     }
@@ -842,7 +789,7 @@
 
     document.getElementById('runBtn').addEventListener('click', runCode);
 
-    // ── Cheatsheet ────────────────────────────────────────────────────────────
+    // â”€â”€ Cheatsheet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const CHEAT = [
       { code: 'print(x)', desc: 'output x to console' },
       { code: 'type(x)', desc: 'get type of x' },
@@ -883,8 +830,10 @@
       });
     });
 
-    // ── Init ──────────────────────────────────────────────────────────────────
+    // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     renderTabs();
   </script>
-</body>
-</html>
+
+
+</body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483000;"></div></html>
+
