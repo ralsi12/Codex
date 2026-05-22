@@ -372,6 +372,72 @@ fruits.<span class="fn">remove</span>(<span class="st">"banana"</span>)<br>
     }
 ];
 
+const moduleEnhancements = {
+    1: {
+        lens: 'Use fundamentals to build a simple but polished tool, then explain the problem it solves and the care you took with input, output, and readability.',
+        skills: ['Variables', 'Types', 'Input/Output', 'Readable Code'],
+        roadmap: ['Create a CLI calculator or quiz.', 'Add validation and clear error messages.', 'Write a short README explaining who the tool helps.'],
+        stretch: ['Save results to a file', 'Add tests for edge cases', 'Record a 45-second demo'],
+        present: 'A strong first project shows that you can turn basic syntax into a usable workflow with clean communication.'
+    },
+    2: {
+        lens: 'Control flow makes projects feel responsive: decisions, scoring, recommendations, and rules that adapt to a user.',
+        skills: ['Conditionals', 'Loops', 'Rules', 'User Decisions'],
+        roadmap: ['Build a decision helper with branching logic.', 'Add scoring, categories, and repeatable prompts.', 'Compare weak and strong explanations of the final result.'],
+        stretch: ['Add a difficulty selector', 'Store user history', 'Handle invalid input gracefully'],
+        present: 'Frame it as a system that translates messy choices into clear recommendations.'
+    },
+    3: {
+        lens: 'Functions show that you can organize logic, reduce repetition, and design code someone else could understand.',
+        skills: ['Functions', 'Parameters', 'Return Values', 'Refactoring'],
+        roadmap: ['Refactor a script into named functions.', 'Add reusable helpers and a main workflow.', 'Document the tradeoffs behind your design choices.'],
+        stretch: ['Add unit tests', 'Create reusable modules', 'Support multiple user modes'],
+        present: 'Highlight the before-and-after: how structure made the project easier to extend and explain.'
+    },
+    4: {
+        lens: 'Data structures turn raw information into something useful, which is the backbone of dashboards, planners, trackers, and search tools.',
+        skills: ['Lists', 'Dictionaries', 'Sets', 'Data Modeling'],
+        roadmap: ['Model a real-world collection of data.', 'Add sorting, filtering, and search.', 'Explain how your data model changed as the project grew.'],
+        stretch: ['Import CSV data', 'Add saved user profiles', 'Visualize summary counts'],
+        present: 'Show that your project is more than syntax by explaining why each data structure fits the problem.'
+    },
+    5: {
+        lens: 'OOP helps students build larger projects with clear responsibilities, making games, planners, and simulations easier to defend.',
+        skills: ['Classes', 'Methods', 'Inheritance', 'System Design'],
+        roadmap: ['Create classes for the main things in your project.', 'Add methods that keep behavior close to the data.', 'Diagram the object relationships in the README.'],
+        stretch: ['Use dataclasses', 'Add save/load behavior', 'Write tests for each class'],
+        present: 'Explain how your design prevents messy code and makes future features easier.'
+    },
+    6: {
+        lens: 'File handling and exceptions make a project durable: it remembers data, survives mistakes, and feels closer to a real app.',
+        skills: ['Files', 'Paths', 'Exceptions', 'Persistence'],
+        roadmap: ['Save user data between sessions.', 'Add helpful errors for missing or invalid files.', 'Document failure cases and how you handled them.'],
+        stretch: ['Export a report', 'Add backups', 'Support JSON and CSV'],
+        present: 'Admissions readers do not need every detail; show that you thought about real users and real failure modes.'
+    },
+    7: {
+        lens: 'Modules and packages prove that you can work beyond one file and use the Python ecosystem responsibly.',
+        skills: ['Imports', 'Packages', 'Virtual Environments', 'Project Structure'],
+        roadmap: ['Split a project into clear files.', 'Add a requirements file and setup notes.', 'Explain which library you chose and why.'],
+        stretch: ['Create a utility package', 'Add command-line arguments', 'Publish clean setup instructions'],
+        present: 'Focus on maintainability: how your structure makes the project easier to run, inspect, and improve.'
+    },
+    8: {
+        lens: 'Data projects are strong for college applications because they can connect code to a real question, community, or personal interest.',
+        skills: ['APIs', 'CSV/JSON', 'Data Cleaning', 'Visualization'],
+        roadmap: ['Find or collect a meaningful dataset.', 'Clean, analyze, and visualize trends.', 'Write the story: question, method, insight, limitation.'],
+        stretch: ['Deploy a dashboard', 'Compare two data sources', 'Add a reproducible notebook or report'],
+        present: 'A good data writeup names the question, the source, the cleaning choices, and what the result changed.'
+    },
+    9: {
+        lens: 'Advanced topics help capstones feel mature: testing, async, type hints, profiling, and deployment show technical depth.',
+        skills: ['Testing', 'Async', 'Type Hints', 'Performance'],
+        roadmap: ['Choose one capstone and define a narrow real user.', 'Add tests, docs, and a deployment or demo path.', 'Prepare a concise interview answer about tradeoffs.'],
+        stretch: ['Add CI checks', 'Profile a bottleneck', 'Write a technical postmortem'],
+        present: 'Do not claim mastery of everything; explain one hard technical decision clearly and honestly.'
+    }
+};
+
 const moduleList = document.getElementById('moduleList');
 const mainContent = document.getElementById('mainContent');
 
@@ -379,6 +445,14 @@ function getLevelClass(mod) {
     if (mod.levelClass === 'blue') return 'blue';
     if (mod.levelClass === 'pink') return 'pink';
     return '';
+}
+
+function renderList(items) {
+    return items.map(item => `<li>${item}</li>`).join('');
+}
+
+function renderChips(items) {
+    return items.map(item => `<span>${item}</span>`).join('');
 }
 
 function renderSidebar() {
@@ -408,6 +482,7 @@ function loadModule(id) {
 
     const lc = getLevelClass(mod);
     const badgeClass = lc === 'blue' ? 'blue' : lc === 'pink' ? 'pink' : '';
+    const enhancement = moduleEnhancements[mod.id];
 
     mainContent.innerHTML = `
     <div class="breadcrumb">
@@ -432,6 +507,37 @@ function loadModule(id) {
         <div class="tag-row">
         ${mod.tags.map(t => `<span class="tag">${t}</span>`).join('')}
         </div>
+    </div>
+
+    <div class="portfolio-context">
+        <div class="context-card application-lens">
+        <div class="context-label">College-app lens</div>
+        <p>${enhancement.lens}</p>
+        </div>
+        <div class="context-card">
+        <div class="context-label">Skills demonstrated</div>
+        <div class="skill-chip-row">${renderChips(enhancement.skills)}</div>
+        </div>
+    </div>
+
+    <div class="roadmap-panel">
+        <div>
+        <div class="lessons-section-title">Project Roadmap</div>
+        <ol class="roadmap-list">
+            ${renderList(enhancement.roadmap)}
+        </ol>
+        </div>
+        <div>
+        <div class="lessons-section-title">Stretch Goals</div>
+        <ul class="stretch-list">
+            ${renderList(enhancement.stretch)}
+        </ul>
+        </div>
+    </div>
+
+    <div class="presentation-note">
+        <div class="context-label">How to present it</div>
+        <p>${enhancement.present}</p>
     </div>
 
     <div class="lessons-section">
