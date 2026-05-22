@@ -78,6 +78,7 @@ nav {
     grid-template-columns: 280px 1fr;
     min-height: 100vh;
     padding-top: 64px;
+    min-width: 0;
 }
 
 /* SIDEBAR */
@@ -91,6 +92,7 @@ nav {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+    min-width: 0;
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -148,6 +150,7 @@ nav {
 .content {
     padding: 3rem 3.5rem;
     max-width: 860px;
+    min-width: 0;
 }
 
 /* BREADCRUMB */
@@ -284,6 +287,90 @@ nav {
 .lesson-type.exercise { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
 .lesson-type.project { background: rgba(255,94,126,.1); color: var(--accent3); border: 1px solid rgba(255,94,126,.2); }
 
+/* PORTFOLIO CONTEXT */
+.portfolio-context {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    animation: fadeUp .5s .08s ease both;
+}
+
+.context-card,
+.roadmap-panel,
+.presentation-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.context-label {
+    font-family: var(--mono);
+    font-size: .65rem;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .65rem;
+}
+
+.context-card p,
+.presentation-note p {
+    color: var(--text-dim);
+    font-size: .86rem;
+    line-height: 1.65;
+}
+
+.skill-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+}
+
+.skill-chip-row span {
+    font-family: var(--mono);
+    font-size: .62rem;
+    color: var(--accent2);
+    border: 1px solid rgba(79,140,255,.22);
+    background: rgba(79,140,255,.08);
+    border-radius: 4px;
+    padding: .22rem .55rem;
+}
+
+.roadmap-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+    animation: fadeUp .5s .12s ease both;
+}
+
+.roadmap-list,
+.stretch-list {
+    display: grid;
+    gap: .65rem;
+    padding-left: 1.2rem;
+    color: var(--text-dim);
+    font-size: .84rem;
+    line-height: 1.55;
+}
+
+.roadmap-list li::marker {
+    color: var(--accent);
+    font-family: var(--mono);
+}
+
+.stretch-list li::marker {
+    color: var(--accent3);
+}
+
+.presentation-note {
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, rgba(0,229,160,.07), rgba(79,140,255,.06));
+    border-color: rgba(0,229,160,.16);
+    animation: fadeUp .5s .16s ease both;
+}
+
 /* CODE SAMPLE */
 .code-preview-block {
     margin-top: 2.5rem;
@@ -303,6 +390,7 @@ nav {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    min-width: 0;
 }
 .code-titlebar {
     display: flex;
@@ -389,4 +477,6 @@ nav {
     }
     .content { padding: 2rem 1.25rem; }
     nav { padding: 1rem 1.25rem; }
+    .portfolio-context,
+    .roadmap-panel { grid-template-columns: 1fr; }
 }
