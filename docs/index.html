@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mindflex — Learn Python</title>
+  <title>Mindflex — Portfolio-Ready Python Projects</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link href="style.css" rel="stylesheet" />
@@ -15,7 +15,9 @@
   <nav>
     <a href="#" class="nav-logo">mindflex<span>.py</span></a>
     <ul class="nav-links">
-      <li><a href="#curriculum">Curriculum</a></li>
+      <li><a href="#project-finder">Project Finder</a></li>
+      <li><a href="#curriculum">Roadmaps</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#start" class="nav-cta">Start Free</a></li>
     </ul>
@@ -23,14 +25,14 @@
  
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-badge">Interactive Python Learning Platform</div>
-    <h1>Master <em>Python</em><br>Line by Line</h1>
+    <div class="hero-badge">College-Application Project Builder</div>
+    <h1>Build <em>Python</em><br>Projects Worth Showing</h1>
     <p class="hero-sub">
-      Mindflex is a structured, hands-on curriculum for anyone who wants to go from zero to fluent in Python — with real code, real projects, and zero fluff.
+      Mindflex helps students learn Python by building projects they can explain, defend, and showcase on college applications, resumes, interviews, and GitHub.
     </p>
     <div class="hero-actions">
-      <a href="lesson-preview.html?module=1" class="btn btn-primary">Start Learning →</a>
-      <a href="#preview" class="btn btn-ghost">See a lesson</a>
+      <a href="#project-finder" class="btn btn-primary">Find a Project →</a>
+      <a href="lesson-preview.html?module=1" class="btn btn-ghost">Start Roadmap</a>
     </div>
     <div class="scroll-hint">
       scroll
@@ -44,21 +46,64 @@
   <div class="stats">
     <div class="stat-item">
       <div class="stat-num">12</div>
-      <div class="stat-label">Core Modules</div>
+      <div class="stat-label">Skill Modules</div>
     </div>
     <div class="stat-item">
       <div class="stat-num">80+</div>
-      <div class="stat-label">Exercises</div>
+      <div class="stat-label">Milestones</div>
     </div>
     <div class="stat-item">
       <div class="stat-num">6</div>
-      <div class="stat-label">Real Projects</div>
+      <div class="stat-label">Portfolio Paths</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">∞</div>
-      <div class="stat-label">Free Forever</div>
+      <div class="stat-num">1</div>
+      <div class="stat-label">Application Story</div>
     </div>
   </div>
+
+  <!-- PROJECT FINDER -->
+  <section class="project-finder" id="project-finder">
+    <div class="container">
+      <div class="project-finder-grid">
+        <div class="reveal">
+          <div class="section-tag">// Project Finder</div>
+          <h2 class="section-title">Choose a story,<br>then build toward it.</h2>
+          <p class="section-sub">Pick a theme that sounds like you. Mindflex turns it into a portfolio-ready Python project with skills, milestones, stretch goals, and a college-app framing angle.</p>
+          <div class="story-controls" id="storyControls">
+            <button type="button" class="story-chip active" data-story="healthcare">Healthcare</button>
+            <button type="button" class="story-chip" data-story="sports">Sports</button>
+            <button type="button" class="story-chip" data-story="music">Music</button>
+            <button type="button" class="story-chip" data-story="climate">Climate</button>
+            <button type="button" class="story-chip" data-story="school">School Productivity</button>
+          </div>
+        </div>
+        <div class="story-card reveal" id="storyCard">
+          <div class="story-label">Recommended build</div>
+          <h3 id="storyTitle">Personal Wellness Trend Tracker</h3>
+          <p id="storyDesc">Collect daily mood, sleep, and study data, then visualize patterns and suggest healthier routines.</p>
+          <div class="story-meta" id="storySkills">
+            <span>CSV</span><span>Charts</span><span>Data Cleaning</span><span>Reflection</span>
+          </div>
+          <div class="story-steps">
+            <div>
+              <span>01</span>
+              <p>Build the basic tracker and save entries locally.</p>
+            </div>
+            <div>
+              <span>02</span>
+              <p>Add charts, filters, and summary statistics.</p>
+            </div>
+            <div>
+              <span>03</span>
+              <p>Write the application story: problem, initiative, impact, next step.</p>
+            </div>
+          </div>
+          <a href="lesson-preview.html?module=8" class="preview-link strong">Open the data roadmap →</a>
+        </div>
+      </div>
+    </div>
+  </section>
  
   <!-- CURRICULUM -->
 
@@ -72,7 +117,7 @@
 
         <h2 class="section-title">Everything you need,<br>nothing you don't.</h2>
 
-        <p class="section-sub">A carefully sequenced path from your first print() to deploying real applications.</p>
+        <p class="section-sub">A carefully sequenced path from your first print() to projects with prerequisites, milestones, stretch goals, and a clear portfolio story.</p>
 
       </div>
 
@@ -464,34 +509,111 @@ fruits.<span class="fn">remove</span>(<span class="st">"banana"</span>)<br>
   </section>
 
 
+  <!-- PORTFOLIO BUILDER -->
+  <section class="portfolio-section" id="portfolio">
+    <div class="container">
+      <div class="portfolio-header reveal">
+        <div class="section-tag">// Portfolio Builder</div>
+        <h2 class="section-title">Turn code into<br>a convincing story.</h2>
+        <p class="section-sub">Every strong project needs more than working code. Mindflex helps students polish the proof: README, screenshots, demo, deployment, reflection, and interview-ready explanation.</p>
+      </div>
+      <div class="portfolio-grid">
+        <div class="portfolio-card reveal">
+          <div class="portfolio-kicker">Roadmap</div>
+          <h3>Concept → milestones → stretch goals</h3>
+          <p>Each project is broken into beginner, intermediate, and advanced upgrades so students can keep improving instead of stopping at a tutorial clone.</p>
+        </div>
+        <div class="portfolio-card reveal">
+          <div class="portfolio-kicker">Originality Coach</div>
+          <h3>Make the project unmistakably yours</h3>
+          <p>Prompts push students to add a niche dataset, a personal user, a better interface, tests, documentation, or a live deployment.</p>
+        </div>
+        <div class="portfolio-card reveal">
+          <div class="portfolio-kicker">Submission Preview</div>
+          <h3>Explain it like an applicant</h3>
+          <p>Students practice turning technical work into a short Common App activity, interview answer, or resume bullet without overclaiming.</p>
+        </div>
+      </div>
+      <div class="checklist-panel reveal">
+        <div>
+          <div class="section-tag">// Polish Checklist</div>
+          <h3>Portfolio-ready means the project is easy to inspect.</h3>
+        </div>
+        <ul class="checklist">
+          <li>README with problem, features, setup, and what changed from the base idea.</li>
+          <li>Three screenshots or a short demo video that proves the project runs.</li>
+          <li>GitHub commits, comments, tests, and a reflection on tradeoffs or bugs.</li>
+          <li>One deployment link or reproducible local setup for reviewers.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
  
   <!-- FEATURES -->
   <section class="features" id="features">
     <div class="container">
       <div class="reveal">
         <div class="section-tag">// Why Mindflex</div>
-        <h2 class="section-title">Built for how people<br>actually learn.</h2>
+        <h2 class="section-title">Built for students<br>who need proof.</h2>
       </div>
       <div class="features-grid">
         <div class="feature-card reveal">
-          <div class="feature-icon green">🧩</div>
-          <div class="feature-title">Structured Path</div>
-          <div class="feature-desc">No jumping around. Concepts build on each other deliberately, so nothing feels confusing or out of place.</div>
+          <div class="feature-icon green">01</div>
+          <div class="feature-title">College-App Lens</div>
+          <div class="feature-desc">Every project explains the admissions angle: initiative, technical depth, measurable impact, and what the student can honestly claim.</div>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon blue">⚡</div>
-          <div class="feature-title">In-Browser Editor</div>
-          <div class="feature-desc">Write and run Python right in your browser. No installs, no setup — just open a lesson and start coding.</div>
+          <div class="feature-icon blue">02</div>
+          <div class="feature-title">Skill Mapping</div>
+          <div class="feature-desc">Modules call out the exact skills a project demonstrates: APIs, OOP, data handling, UI design, testing, deployment, GitHub, and docs.</div>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon pink">🎯</div>
-          <div class="feature-title">Challenge Exercises</div>
-          <div class="feature-desc">Each module ends with graded exercises that push you to apply what you've learned, not just remember it.</div>
+          <div class="feature-icon pink">03</div>
+          <div class="feature-title">Bad vs. Better Framing</div>
+          <div class="feature-desc">Students learn how to replace vague project descriptions with specific claims about users, constraints, decisions, and outcomes.</div>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon yellow">🏗️</div>
-          <div class="feature-title">Real Projects</div>
-          <div class="feature-desc">Build a CLI app, a web scraper, a data dashboard, and more — projects you can actually show off.</div>
+          <div class="feature-icon yellow">04</div>
+          <div class="feature-title">Progress Ladder</div>
+          <div class="feature-desc">Beginner builds grow into stronger intermediate and advanced versions, so students can show improvement instead of one-off practice.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="case-study reveal">
+          <div class="section-tag">// Case Study</div>
+          <h2 class="section-title">From project to proof.</h2>
+          <p class="section-sub">Example writeups show what a student built, what they learned, what broke, and how they explained the result with technical honesty.</p>
+          <div class="case-card">
+            <div class="case-label">Example</div>
+            <h3>School Lunch Demand Forecaster</h3>
+            <p>A student combines CSV cleaning, charts, and simple prediction logic to help a club estimate event food orders. The story emphasizes initiative, useful constraints, and iteration.</p>
+          </div>
+        </div>
+        <div class="framing-panel reveal">
+          <div class="section-tag">// Bad vs. Better</div>
+          <div class="comparison">
+            <div>
+              <span>Weak</span>
+              <p>"I made a Python app that analyzes data."</p>
+            </div>
+            <div>
+              <span>Stronger</span>
+              <p>"I built a Python dashboard that cleaned 400 survey rows, visualized trends, and helped my club choose meeting times."</p>
+            </div>
+          </div>
+          <div class="faq-mini">
+            <h3>Admissions-minded FAQ</h3>
+            <p>What counts as meaningful? A project with a real user, personal question, original dataset, or clear improvement over time.</p>
+            <p>Solo or team? Both work, as long as the student can name their own decisions, tradeoffs, and contributions.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -500,10 +622,10 @@ fruits.<span class="fn">remove</span>(<span class="st">"banana"</span>)<br>
   <!-- CTA -->
   <section class="cta-banner" id="start">
     <div class="container">
-      <h2 class="reveal">Your first line of Python<br>is one click away.</h2>
-      <p class="reveal">Free, no account required to start. Create an account to save progress and access leaderboards.</p>
+      <h2 class="reveal">Build something you can<br>actually talk about.</h2>
+      <p class="reveal">Start with Python fundamentals, then shape your work into a portfolio project with a roadmap, checklist, and application-ready story.</p>
       <div class="reveal">
-        <a href="lesson-preview.html?module=1" class="btn btn-primary" style="font-size:1rem;padding:.9rem 2.2rem;">Begin Module 01 →</a>
+        <a href="lesson-preview.html?module=1" class="btn btn-primary" style="font-size:1rem;padding:.9rem 2.2rem;">Begin the Roadmap →</a>
       </div>
     </div>
   </section>
